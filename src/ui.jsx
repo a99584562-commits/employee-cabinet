@@ -29,10 +29,23 @@ const TONES = {
   accent: "glass-accent border-white/50 ring-1 ring-white/30 text-ink",
   dark: "glass-dark border-white/10 text-white",
 };
-export function Panel({ children, className, tone = "card" }) {
+export function Panel({ children, className, tone = "card", lift = true }) {
   return (
-    <div className={cn("overflow-hidden rounded-[26px] border shadow-soft", TONES[tone], className)}>
+    <div className={cn("overflow-hidden rounded-[26px] border shadow-soft", lift && "panel-lift hover:shadow-lift", TONES[tone], className)}>
       {children}
+    </div>
+  );
+}
+
+/* Glass modal */
+export function Modal({ open, onClose, children }) {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-[60] grid place-items-center p-4">
+      <div className="fade-in absolute inset-0 bg-ink/35 backdrop-blur-[3px]" onClick={onClose} />
+      <div className="glass-strong pop relative w-full max-w-sm overflow-hidden rounded-[28px] border border-white/70 p-6 text-center shadow-lift ring-1 ring-black/[0.06]">
+        {children}
+      </div>
     </div>
   );
 }
@@ -78,8 +91,9 @@ const LOCKED = { c1: "#EFEDF4", c2: "#DEDBE8", c3: "#CAC6D6", rim: "#BFBACC", gl
 
 export const tierMeta = (tier) => TIERS[tier] ?? TIERS.common;
 
-export function Badge({ icon, tier = "common", earned = true, size = 76 }) {
+export function Badge({ icon, tier = "common", earned = true, size = 76, onClick }) {
   const uid = useId().replace(/:/g, "");
+  const Comp = onClick ? "button" : "div";
   const t = earned ? (TIERS[tier] ?? TIERS.common) : LOCKED;
   const Icon = BADGE_ICONS[icon] ?? Trophy;
   const bumps = Array.from({ length: 12 }, (_, i) => {
@@ -87,36 +101,47 @@ export function Badge({ icon, tier = "common", earned = true, size = 76 }) {
     return [50 + Math.cos(a) * 34, 50 + Math.sin(a) * 34];
   });
   return (
-    <div className="relative shrink-0" style={{ width: size, height: size }}>
-      {earned && <div className="absolute inset-[16%] rounded-full blur-[10px]" style={{ background: t.glow }} />}
-      <svg viewBox="0 0 100 100" width={size} height={size} className="relative block">
-        <defs>
-          <radialGradient id={`f${uid}`} cx="50%" cy="30%" r="75%">
-            <stop offset="0%" stopColor={t.c1} />
-            <stop offset="55%" stopColor={t.c2} />
-            <stop offset="100%" stopColor={t.c3} />
-          </radialGradient>
-        </defs>
-        {bumps.map(([x, y], i) => (
-          <circle key={i} cx={x} cy={y} r="7" fill={t.c2} />
-        ))}
-        <circle cx="50" cy="50" r="35" fill={t.rim} />
-        <circle cx="50" cy="50" r="32" fill={`url(#f${uid})`} />
-        <circle cx="50" cy="50" r="25.5" fill="none" stroke="rgba(255,255,255,0.42)" strokeWidth="1.6" />
-        <ellipse cx="50" cy="33" rx="21" ry="11" fill="rgba(255,255,255,0.30)" />
-      </svg>
-      <div
-        className="absolute inset-0 grid place-items-center"
-        style={{ filter: earned ? "drop-shadow(0 1px 1.5px rgba(60,40,10,0.30))" : "none" }}
-      >
-        <Icon size={size * 0.4} weight="fill" color={earned ? "#fff" : "#B4AFC0"} />
-      </div>
-      {!earned && (
-        <div className="absolute bottom-0 right-0 grid place-items-center rounded-full bg-ink ring-2 ring-white/80" style={{ height: size * 0.3, width: size * 0.3 }}>
-          <Lock size={size * 0.15} weight="fill" color="#fff" />
-        </div>
+    <Comp
+      onClick={onClick}
+      className={cn("group relative block shrink-0", onClick && "cursor-pointer outline-none")}
+      style={{ width: size, height: size }}
+    >
+      {earned && (
+        <div
+          className="absolute inset-[16%] rounded-full blur-[10px] transition-all duration-500 group-hover:scale-125 group-hover:brightness-110"
+          style={{ background: t.glow }}
+        />
       )}
-    </div>
+      <div className="relative h-full w-full transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:-translate-y-1 group-hover:scale-[1.06] group-hover:-rotate-[5deg]">
+        <svg viewBox="0 0 100 100" width={size} height={size} className="block">
+          <defs>
+            <radialGradient id={`f${uid}`} cx="50%" cy="30%" r="75%">
+              <stop offset="0%" stopColor={t.c1} />
+              <stop offset="55%" stopColor={t.c2} />
+              <stop offset="100%" stopColor={t.c3} />
+            </radialGradient>
+          </defs>
+          {bumps.map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r="7" fill={t.c2} />
+          ))}
+          <circle cx="50" cy="50" r="35" fill={t.rim} />
+          <circle cx="50" cy="50" r="32" fill={`url(#f${uid})`} />
+          <circle cx="50" cy="50" r="25.5" fill="none" stroke="rgba(255,255,255,0.42)" strokeWidth="1.6" />
+          <ellipse cx="50" cy="33" rx="21" ry="11" fill="rgba(255,255,255,0.30)" />
+        </svg>
+        <div
+          className="absolute inset-0 grid place-items-center"
+          style={{ filter: earned ? "drop-shadow(0 1px 1.5px rgba(60,40,10,0.30))" : "none" }}
+        >
+          <Icon size={size * 0.4} weight="fill" color={earned ? "#fff" : "#B4AFC0"} />
+        </div>
+        {!earned && (
+          <div className="absolute bottom-0 right-0 grid place-items-center rounded-full bg-ink ring-2 ring-white/80" style={{ height: size * 0.3, width: size * 0.3 }}>
+            <Lock size={size * 0.15} weight="fill" color="#fff" />
+          </div>
+        )}
+      </div>
+    </Comp>
   );
 }
 

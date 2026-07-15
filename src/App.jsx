@@ -17,6 +17,13 @@ const NAV = [
   { id: "team", label: "Команда", Icon: UsersThree, View: Team },
 ];
 
+const NOTIFS = [
+  { id: 1, emoji: "💰", title: "Зарплата за июль начислена", time: "2 часа назад", tone: "bg-mint-soft" },
+  { id: 2, emoji: "🏅", title: "Новая награда: «Марафонец»", time: "вчера", tone: "bg-amber-soft" },
+  { id: 3, emoji: "📚", title: "Назначен курс «Переговоры pro»", time: "2 дня назад", tone: "bg-indigo-soft" },
+  { id: 4, emoji: "⭐", title: "Коллега оценил тебя на 5", time: "3 дня назад", tone: "bg-sky-soft" },
+];
+
 function greet() {
   const h = new Date().getHours();
   if (h < 6) return "Доброй ночи";
@@ -51,6 +58,8 @@ function NavItem({ item, active, onClick, mobile }) {
 
 export default function App() {
   const [tab, setTab] = useState("home");
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [seen, setSeen] = useState(false);
   const active = NAV.find((n) => n.id === tab) ?? NAV[0];
   const View = active.View;
   const pct = Math.round((user.xp / user.xpToNext) * 100);
@@ -116,10 +125,37 @@ export default function App() {
             <button className="grid h-11 w-11 place-items-center rounded-2xl glass border border-white/70 shadow-soft ring-1 ring-black/[0.04] transition-transform active:scale-95">
               <MagnifyingGlass size={18} weight="bold" className="text-ink-soft" />
             </button>
-            <button className="relative grid h-11 w-11 place-items-center rounded-2xl glass border border-white/70 shadow-soft ring-1 ring-black/[0.04] transition-transform active:scale-95">
-              <Bell size={18} weight="bold" className="text-ink-soft" />
-              <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-pink ring-2 ring-white" />
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => { setNotifOpen((o) => !o); setSeen(true); }}
+                className="relative grid h-11 w-11 place-items-center rounded-2xl glass border border-white/70 shadow-soft ring-1 ring-black/[0.04] transition-transform active:scale-95"
+              >
+                <Bell size={18} weight="bold" className="text-ink-soft" />
+                {!seen && <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-pink ring-2 ring-white" />}
+              </button>
+              {notifOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setNotifOpen(false)} />
+                  <div className="popover-in absolute right-0 top-[52px] z-50 w-[320px] rounded-3xl border border-white/70 glass-strong p-2 shadow-lift ring-1 ring-black/[0.06]">
+                    <div className="flex items-center justify-between px-3 py-2">
+                      <Tag className="text-ink-soft">Уведомления</Tag>
+                      <Tag className="text-indigo">{NOTIFS.length} новых</Tag>
+                    </div>
+                    <div className="max-h-[320px] overflow-auto no-scrollbar">
+                      {NOTIFS.map((n) => (
+                        <div key={n.id} className="flex items-start gap-3 rounded-2xl p-2.5 transition-colors hover:bg-white/60">
+                          <span className={cn("grid h-9 w-9 shrink-0 place-items-center rounded-xl text-[16px]", n.tone)}>{n.emoji}</span>
+                          <div className="min-w-0 flex-1">
+                            <div className="text-[13px] font-600 leading-snug">{n.title}</div>
+                            <div className="mt-0.5 text-[11px] text-ink-mute">{n.time}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </header>
 

@@ -1,4 +1,5 @@
-import { ArrowUpRight, Info } from "@phosphor-icons/react";
+import { useState } from "react";
+import { ArrowUpRight, Info, Eye, EyeSlash } from "@phosphor-icons/react";
 import { salary, sources } from "../data";
 import { Panel, PanelHead, Tag, Hand, CountUp, Reveal, rub, cn } from "../ui";
 
@@ -7,6 +8,7 @@ const SEG = ["var(--color-indigo)", "var(--color-mint)", "var(--color-amber)"];
 export default function Salary() {
   const delta = (((salary.total - salary.prevTotal) / salary.prevTotal) * 100).toFixed(1);
   const max = Math.max(...salary.history.map((h) => h.v));
+  const [hidden, setHidden] = useState(false);
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
       <Reveal className="lg:col-span-7">
@@ -15,9 +17,16 @@ export default function Salary() {
           <div className="px-6 pb-6">
             <div className="flex items-end gap-3">
               <span className="text-[52px] font-800 leading-none tracking-tight sm:text-[64px]">
-                <CountUp to={salary.total} format={(v) => new Intl.NumberFormat("ru-RU").format(Math.round(v))} />
+                {hidden ? "••• •••" : <CountUp to={salary.total} format={(v) => new Intl.NumberFormat("ru-RU").format(Math.round(v))} />}
               </span>
               <span className="pb-2.5 text-3xl font-600 text-ink-mute">₽</span>
+              <button
+                onClick={() => setHidden((h) => !h)}
+                title={hidden ? "Показать" : "Скрыть"}
+                className="mb-3 grid h-9 w-9 place-items-center rounded-full text-ink-mute transition-colors hover:bg-black/5 hover:text-ink-soft"
+              >
+                {hidden ? <Eye size={19} weight="regular" /> : <EyeSlash size={19} weight="regular" />}
+              </button>
             </div>
             <div className="mt-3 flex items-center gap-3">
               <span className="flex items-center gap-1 rounded-full bg-mint-soft px-2.5 py-1 text-mint">

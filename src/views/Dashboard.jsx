@@ -1,4 +1,5 @@
-import { ArrowUpRight, Fire, Star } from "@phosphor-icons/react";
+import { useState } from "react";
+import { ArrowUpRight, Fire, Star, Eye, EyeSlash, Check } from "@phosphor-icons/react";
 import { salary, kpis, tasks, courses, awards, team, user } from "../data";
 import { Panel, PanelHead, Tag, Hand, Badge, CountUp, Ring, Bar, Reveal, rub, cn, plural } from "../ui";
 
@@ -8,6 +9,7 @@ const SEG = ["var(--color-indigo)", "var(--color-mint)", "var(--color-amber)"];
 function SalaryHero() {
   const delta = (((salary.total - salary.prevTotal) / salary.prevTotal) * 100).toFixed(1);
   const max = Math.max(...salary.history.map((h) => h.v));
+  const [hidden, setHidden] = useState(false);
   return (
     <Panel className="flex h-full flex-col">
       <PanelHead no="01" title="Зарплата · Июль" right="₽ на карту" />
@@ -16,9 +18,16 @@ function SalaryHero() {
           <div>
             <div className="flex items-end gap-2">
               <span className="text-[46px] font-800 leading-none tracking-tight sm:text-[58px]">
-                <CountUp to={salary.total} format={(v) => new Intl.NumberFormat("ru-RU").format(Math.round(v))} />
+                {hidden ? "••• •••" : <CountUp to={salary.total} format={(v) => new Intl.NumberFormat("ru-RU").format(Math.round(v))} />}
               </span>
               <span className="pb-2 text-2xl font-600 text-ink-mute">₽</span>
+              <button
+                onClick={() => setHidden((h) => !h)}
+                title={hidden ? "Показать" : "Скрыть"}
+                className="mb-2 grid h-8 w-8 place-items-center rounded-full text-ink-mute transition-colors hover:bg-black/5 hover:text-ink-soft"
+              >
+                {hidden ? <Eye size={18} weight="regular" /> : <EyeSlash size={18} weight="regular" />}
+              </button>
             </div>
             <Hand className="mt-1 block text-[20px] text-violet">чистыми, без сюрпризов ▸</Hand>
           </div>
@@ -132,20 +141,33 @@ function KpiStrip() {
 
 /* 05 · Tasks */
 function TasksCard() {
+  const [items, setItems] = useState(() => tasks.map((t) => ({ ...t, done: false })));
+  const toggle = (id) =>
+    setItems((prev) => {
+      const next = prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t));
+      return next.slice().sort((a, b) => (a.done ? 1 : 0) - (b.done ? 1 : 0));
+    });
+  const left = items.filter((t) => !t.done).length;
   return (
     <Panel className="flex h-full flex-col">
-      <PanelHead no="05" title="Задачи" right={`${tasks.length} акт`} />
+      <PanelHead no="05" title="Задачи" right={left ? `${left} осталось` : "всё готово 🎉"} />
       <div className="flex-1 px-3 pb-3">
-        {tasks.map((t) => (
-          <div key={t.id} className="flex items-center gap-3 rounded-2xl px-2.5 py-2 transition-colors hover:bg-white/50">
-            <span className={cn("grid h-6 w-6 shrink-0 place-items-center rounded-full", t.hot ? "bg-pink-soft" : "ring-1 ring-black/12")}>
-              {t.hot && <Fire size={12} weight="fill" className="text-pink" />}
-            </span>
+        {items.map((t) => (
+          <div key={t.id} className={cn("flex items-center gap-3 rounded-2xl px-2.5 py-2 transition-all duration-300", t.done ? "opacity-50" : "hover:bg-white/50")}>
+            <button
+              onClick={() => toggle(t.id)}
+              className={cn(
+                "grid h-6 w-6 shrink-0 place-items-center rounded-full transition-colors",
+                t.done ? "bg-mint text-white" : t.hot ? "bg-pink-soft hover:bg-pink/20" : "ring-1 ring-black/[0.14] hover:ring-2 hover:ring-mint"
+              )}
+            >
+              {t.done ? <Check size={12} weight="bold" /> : t.hot ? <Fire size={12} weight="fill" className="text-pink" /> : null}
+            </button>
             <div className="min-w-0 flex-1">
-              <div className="truncate text-[13px] font-600">{t.title}</div>
+              <div className={cn("truncate text-[13px] font-600", t.done && "text-ink-mute line-through")}>{t.title}</div>
               <div className="truncate text-[11px] text-ink-mute">{t.project}</div>
             </div>
-            <span className={cn("shrink-0 text-[11px] font-700", t.hot ? "text-pink" : "text-ink-mute")}>{t.due}</span>
+            <span className={cn("shrink-0 text-[11px] font-700", t.done ? "text-ink-mute" : t.hot ? "text-pink" : "text-ink-mute")}>{t.due}</span>
           </div>
         ))}
       </div>
