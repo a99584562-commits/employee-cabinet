@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { ArrowUpRight, Fire, Star, Eye, EyeSlash, Check } from "@phosphor-icons/react";
 import { salary, kpis, tasks, courses, awards, team, user } from "../data";
-import { Panel, PanelHead, Tag, Hand, Badge, CountUp, Ring, Bar, Reveal, rub, cn, plural } from "../ui";
+import { Panel, PanelHead, Tag, Hand, Badge, IconTile, CountUp, Ring, Bar, Reveal, rub, cn, plural } from "../ui";
 
-const SEG = ["var(--color-indigo)", "var(--color-mint)", "var(--color-amber)"];
+const SEG = ["var(--color-accent)", "var(--color-mint)", "var(--color-amber)"];
 
 /* 01 · Salary */
 function SalaryHero() {
@@ -62,7 +62,7 @@ function SalaryHero() {
                 <div key={h.m} className="flex flex-1 flex-col items-center gap-1.5">
                   <span className="text-[10.5px] font-600 text-ink-mute">{Math.round(h.v / 1000)}</span>
                   <div
-                    className={cn("bar-grow w-full rounded-lg", last ? "bg-gradient-to-t from-indigo to-violet" : "bg-ink/[0.08]")}
+                    className={cn("bar-grow w-full rounded-lg", last ? "bg-gradient-to-t from-accent to-accent-2" : "bg-ink/[0.10]")}
                     style={{ "--h": `${(h.v / max) * 66 + 8}px`, height: `${(h.v / max) * 66 + 8}px`, animationDelay: `${0.15 + i * 0.05}s` }}
                   />
                   <span className="text-[10.5px] font-500 text-ink-mute">{h.m}</span>
@@ -70,11 +70,11 @@ function SalaryHero() {
               );
             })}
           </div>
-          <div className="mt-5 flex items-center justify-between border-t border-black/[0.06] pt-4">
+          <div className="mt-5 flex items-center justify-between border-t hairline pt-4">
             <Tag className="text-ink-soft">Выплата 05.08</Tag>
             <div className="flex gap-1.5">
               {["Битрикс24", "amoCRM", "1С"].map((s) => (
-                <span key={s} className="rounded-full bg-white/60 px-2.5 py-1 ring-1 ring-black/[0.05]"><Tag className="text-ink-mute">{s}</Tag></span>
+                <span key={s} className="chip rounded-full px-2.5 py-1"><Tag className="text-ink-mute">{s}</Tag></span>
               ))}
             </div>
           </div>
@@ -117,7 +117,7 @@ function LevelCard() {
 
 /* 03 · KPI */
 function KpiStrip() {
-  const colors = ["var(--color-indigo)", "var(--color-mint)", "var(--color-amber)", "var(--color-sky)"];
+  const colors = ["var(--color-accent)", "var(--color-mint)", "var(--color-amber)", "var(--color-sky)"];
   return (
     <Panel>
       <PanelHead no="03" title="KPI · Июль" right="из Битрикс24" />
@@ -125,7 +125,7 @@ function KpiStrip() {
         {kpis.map((k, i) => {
           const pct = Math.min((k.value / (k.unit === "%" && k.target === 100 ? 100 : k.target)) * 100, 100);
           return (
-            <div key={k.key} className="flex flex-col items-center rounded-2xl bg-white/40 py-4 text-center ring-1 ring-black/[0.04]">
+            <div key={k.key} className="tile flex flex-col items-center rounded-2xl py-4 text-center">
               <Ring value={pct} size={72} stroke={7} color={colors[i]}>
                 <span className="text-[16px] font-800">{k.value}{k.unit}</span>
               </Ring>
@@ -150,15 +150,15 @@ function TasksCard() {
   const left = items.filter((t) => !t.done).length;
   return (
     <Panel className="flex h-full flex-col">
-      <PanelHead no="05" title="Задачи" right={left ? `${left} осталось` : "всё готово 🎉"} />
+      <PanelHead no="05" title="Задачи" right={left ? `${left} осталось` : "всё готово"} />
       <div className="flex-1 px-3 pb-3">
         {items.map((t) => (
-          <div key={t.id} className={cn("flex items-center gap-3 rounded-2xl px-2.5 py-2 transition-all duration-300", t.done ? "opacity-50" : "hover:bg-white/50")}>
+          <div key={t.id} className={cn("flex items-center gap-3 rounded-2xl px-2.5 py-2 transition-all duration-300", t.done ? "opacity-50" : "hover:bg-white/50 dark:hover:bg-white/[0.06]")}>
             <button
               onClick={() => toggle(t.id)}
               className={cn(
                 "grid h-6 w-6 shrink-0 place-items-center rounded-full transition-colors",
-                t.done ? "bg-mint text-white" : t.hot ? "bg-pink-soft hover:bg-pink/20" : "ring-1 ring-black/[0.14] hover:ring-2 hover:ring-mint"
+                t.done ? "bg-mint text-white" : t.hot ? "bg-pink-soft hover:bg-pink/20" : "ring-1 ring-ink/20 hover:ring-2 hover:ring-mint"
               )}
             >
               {t.done ? <Check size={12} weight="bold" /> : t.hot ? <Fire size={12} weight="fill" className="text-pink" /> : null}
@@ -213,14 +213,14 @@ function CoursesCard() {
       <PanelHead no="06" title="Обучение" right={`${inProgress} в процессе`} />
       <div className="grid gap-2.5 px-5 pb-5 sm:grid-cols-2">
         {courses.map((c) => (
-          <div key={c.id} className="flex items-center gap-3 rounded-2xl bg-white/40 p-3 ring-1 ring-black/[0.04]">
-            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/70 text-[20px] ring-1 ring-black/[0.04]">{c.emoji}</div>
+          <div key={c.id} className="tile flex items-center gap-3 rounded-2xl p-3">
+            <IconTile icon={c.icon} tone={c.tone} size={44} />
             <div className="min-w-0 flex-1">
               <div className="flex items-center justify-between gap-2">
                 <span className="truncate text-[13px] font-700">{c.title}</span>
-                <span className="text-[12px] font-700 text-indigo">{c.progress}%</span>
+                <span className="text-[12px] font-700 text-accent">{c.progress}%</span>
               </div>
-              <Bar value={c.progress} color={c.progress === 100 ? "var(--color-mint)" : "var(--color-indigo)"} className="mt-2 h-1.5" />
+              <Bar value={c.progress} color={c.progress === 100 ? "var(--color-mint)" : "var(--color-accent)"} className="mt-2 h-1.5" />
             </div>
           </div>
         ))}

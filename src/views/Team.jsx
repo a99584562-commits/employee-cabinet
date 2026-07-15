@@ -17,7 +17,7 @@ export default function Team() {
           <div className="flex flex-col items-center px-6 pb-7 pt-2 text-center">
             <div className="bg-gradient-to-br from-white to-white/60 bg-clip-text text-[76px] font-800 leading-none text-transparent">#{team.myRank}</div>
             <Tag className="mt-1 text-white/50">из {team.total} в команде</Tag>
-            <span className="mt-4 rounded-full bg-gradient-to-r from-indigo to-violet px-3.5 py-1.5"><Tag className="text-white">Топ-{Math.round((team.myRank / team.total) * 100)}% отдела</Tag></span>
+            <span className="mt-4 rounded-full bg-gradient-to-r from-accent to-accent-2 px-3.5 py-1.5"><Tag className="text-white">Топ-{Math.round((team.myRank / team.total) * 100)}% отдела</Tag></span>
           </div>
         </Panel>
       </Reveal>
@@ -36,11 +36,11 @@ export default function Team() {
                 </div>
                 <Tag className="mt-1 block text-ink-mute">от {team.peerCount} коллег</Tag>
               </div>
-              <Hand className="mb-2 ml-auto text-[20px] text-violet">так держать!</Hand>
+              <Hand className="mb-2 ml-auto text-[20px] text-accent">так держать!</Hand>
             </div>
             <div className="mt-6 grid gap-3 sm:grid-cols-3">
               {DIMS.map((d) => (
-                <div key={d.label} className="rounded-2xl bg-white/40 p-3.5 ring-1 ring-black/[0.04]">
+                <div key={d.label} className="tile rounded-2xl p-3.5">
                   <div className="mb-2 flex items-center justify-between">
                     <Tag className="text-ink-soft">{d.label}</Tag>
                     <span className="text-[13px] font-800">{d.v}</span>
@@ -58,12 +58,12 @@ export default function Team() {
           <PanelHead no="03" title="Рейтинг месяца" right={`${team.total} чел`} />
           <div className="px-3 pb-3">
             {team.leaderboard.map((p, i) => (
-              <div key={p.name} className={cn("flex items-center gap-4 rounded-2xl px-4 py-3", p.me ? "bg-gradient-to-r from-indigo/12 to-violet/12 ring-1 ring-indigo/15" : "hover:bg-white/50")}>
+              <div key={p.name} className={cn("flex items-center gap-4 rounded-2xl px-4 py-3", p.me ? "bg-accent/[0.12] ring-1 ring-accent/20" : "hover:bg-white/50 dark:hover:bg-white/[0.06]")}>
                 <span className={cn("grid h-8 w-8 shrink-0 place-items-center rounded-full text-[13px] font-800",
-                  i === 0 ? "bg-gradient-to-br from-amber to-amber/80 text-white" : "bg-white/60 text-ink-soft ring-1 ring-black/[0.05]")}>
+                  i === 0 ? "bg-gradient-to-br from-amber to-amber/80 text-white" : "chip text-ink-soft")}>
                   {i === 0 ? <Crown size={15} weight="fill" /> : i + 1}
                 </span>
-                <span className={cn("flex-1 text-[14.5px]", p.me ? "font-800 text-indigo" : "font-600")}>{p.name}{p.me && " · ты"}</span>
+                <span className={cn("flex-1 text-[14.5px]", p.me ? "font-800 text-accent" : "font-600")}>{p.name}{p.me && " · ты"}</span>
                 <span className="text-[15px] font-800">{p.pts}</span>
                 <Tag className="text-ink-mute">баллов</Tag>
               </div>

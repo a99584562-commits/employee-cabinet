@@ -1,14 +1,21 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 @theme {
-  /* — Soft premium light base — */
   --color-canvas: #eeedf4;
   --color-ink: #232030;
   --color-ink-soft: #6c6779;
   --color-ink-mute: #a29dae;
   --color-line: rgba(35, 32, 48, 0.08);
+  --color-obsidian: #1b1926;
 
-  /* — Accents — */
+  /* Accent — overridden at runtime by the theme picker */
+  --color-accent: #6a5af0;
+  --color-accent-2: #9366f2;
+  --color-accent-soft: #ece9fe;
+
+  /* Categorical */
   --color-indigo: #6a5af0;
   --color-violet: #9366f2;
   --color-pink: #ff6ea6;
@@ -16,8 +23,8 @@
   --color-amber: #eda23a;
   --color-sky: #4f9df2;
   --color-teal: #10a596;
-
   --color-indigo-soft: #ece9fe;
+  --color-violet-soft: #f0e9fe;
   --color-mint-soft: #e0f4ec;
   --color-amber-soft: #fbeed7;
   --color-sky-soft: #e6f1fe;
@@ -31,87 +38,108 @@
   --shadow-lift: 0 2px 6px rgba(30, 24, 60, 0.06), 0 26px 54px -18px rgba(30, 24, 60, 0.26);
 }
 
+/* Runtime surface tokens (cascade with data-theme) */
+:root {
+  --s-tile: rgba(255, 255, 255, 0.45);
+  --s-tile-2: rgba(255, 255, 255, 0.62);
+  --s-line: rgba(35, 32, 48, 0.07);
+  --panel-bd: rgba(255, 255, 255, 0.72);
+  --ring-track: rgba(35, 32, 48, 0.09);
+  --glass-bg: rgba(255, 255, 255, 0.58);
+  --glass-strong-bg: rgba(255, 255, 255, 0.74);
+  --mesh-op: 1;
+}
+:root[data-theme="dark"] {
+  --color-canvas: #131219;
+  --color-ink: #f1eff7;
+  --color-ink-soft: #a8a3b7;
+  --color-ink-mute: #726d81;
+  --color-line: rgba(255, 255, 255, 0.10);
+  --s-tile: rgba(255, 255, 255, 0.05);
+  --s-tile-2: rgba(255, 255, 255, 0.09);
+  --s-line: rgba(255, 255, 255, 0.09);
+  --panel-bd: rgba(255, 255, 255, 0.10);
+  --ring-track: rgba(255, 255, 255, 0.13);
+  --glass-bg: rgba(33, 31, 44, 0.56);
+  --glass-strong-bg: rgba(40, 38, 52, 0.74);
+  --mesh-op: 0.55;
+}
+
 @layer base {
-  html {
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-  }
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
   body {
     background-color: var(--color-canvas);
     color: var(--color-ink);
     font-family: var(--font-sans);
     overflow-x: hidden;
+    transition: background-color 0.4s ease, color 0.4s ease;
   }
-  ::selection { background: var(--color-violet); color: #fff; }
+  ::selection { background: var(--color-accent); color: #fff; }
 
-  /* Soft multicolor mesh — the light shining through glass */
   body::before {
     content: "";
     position: fixed;
     inset: -10%;
     z-index: -1;
+    opacity: var(--mesh-op);
     background:
-      radial-gradient(38rem 30rem at 8% 2%, rgba(147, 102, 242, 0.30), transparent 60%),
+      radial-gradient(38rem 30rem at 8% 2%, color-mix(in srgb, var(--color-accent) 40%, transparent), transparent 60%),
       radial-gradient(34rem 30rem at 96% 6%, rgba(79, 157, 242, 0.26), transparent 58%),
       radial-gradient(40rem 34rem at 88% 96%, rgba(255, 110, 166, 0.22), transparent 60%),
       radial-gradient(36rem 32rem at 4% 98%, rgba(34, 177, 132, 0.20), transparent 60%);
-    filter: saturate(1.05);
     pointer-events: none;
+    transition: opacity 0.4s ease;
   }
 }
 
 .font-hand { font-family: var(--font-hand); }
 
-/* Frosted glass surface */
-.glass {
-  background-color: rgba(255, 255, 255, 0.58);
-  -webkit-backdrop-filter: blur(22px) saturate(1.4);
-  backdrop-filter: blur(22px) saturate(1.4);
-}
-.glass-strong {
-  background-color: rgba(255, 255, 255, 0.72);
-  -webkit-backdrop-filter: blur(26px) saturate(1.5);
-  backdrop-filter: blur(26px) saturate(1.5);
-}
-.glass-dark {
-  background-color: rgba(28, 24, 44, 0.72);
-  -webkit-backdrop-filter: blur(22px) saturate(1.3);
-  backdrop-filter: blur(22px) saturate(1.3);
-}
+/* Glass surfaces (theme-aware via vars) */
+.glass { background-color: var(--glass-bg); -webkit-backdrop-filter: blur(22px) saturate(1.4); backdrop-filter: blur(22px) saturate(1.4); }
+.glass-strong { background-color: var(--glass-strong-bg); -webkit-backdrop-filter: blur(26px) saturate(1.5); backdrop-filter: blur(26px) saturate(1.5); }
+.glass-dark { background-color: rgba(20, 18, 30, 0.72); -webkit-backdrop-filter: blur(22px) saturate(1.3); backdrop-filter: blur(22px) saturate(1.3); }
 .glass-accent {
-  background:
-    linear-gradient(142deg, rgba(147, 102, 242, 0.42), rgba(255, 110, 166, 0.30) 55%, rgba(255, 255, 255, 0.18));
+  background: linear-gradient(142deg, color-mix(in srgb, var(--color-accent) 42%, transparent), color-mix(in srgb, var(--color-accent-2) 26%, transparent) 55%, rgba(255, 255, 255, 0.16));
   -webkit-backdrop-filter: blur(22px) saturate(1.5);
   backdrop-filter: blur(22px) saturate(1.5);
 }
 
+/* Semantic surface helpers */
+.panel-edge { border-color: var(--panel-bd); }
+.tile { background-color: var(--s-tile); box-shadow: inset 0 0 0 1px var(--s-line); }
+.tile-2 { background-color: var(--s-tile-2); box-shadow: inset 0 0 0 1px var(--s-line); }
+.chip { background-color: var(--s-tile-2); box-shadow: inset 0 0 0 1px var(--s-line); }
+.hairline { border-color: var(--s-line) !important; }
+.divide-line > * + * { border-top: 1px solid var(--s-line); }
+
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* — Entrance animations (compositor, never stall) — */
+/* Entrance + interaction */
 @keyframes revealUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes viewIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes growBar { from { width: 0; } to { width: var(--w, 0%); } }
 @keyframes growH { from { height: 6px; } to { height: var(--h); } }
 @keyframes drawRing { from { stroke-dashoffset: var(--c); } to { stroke-dashoffset: var(--off); } }
-
 @keyframes pop { from { opacity: 0; transform: scale(0.94) translateY(8px); } to { opacity: 1; transform: none; } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes popIn { 0% { opacity: 0; transform: scale(0.9) translateY(-6px); } 100% { opacity: 1; transform: none; } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
 
 .reveal    { animation: revealUp 0.65s cubic-bezier(0.32, 0.72, 0, 1) both; }
 .view-in   { animation: viewIn 0.4s cubic-bezier(0.32, 0.72, 0, 1) both; }
+.bar-fill  { animation: growBar 0.9s cubic-bezier(0.32, 0.72, 0, 1) 0.12s both; }
+.bar-grow  { animation: growH 0.8s cubic-bezier(0.32, 0.72, 0, 1) both; }
+.ring-draw { animation: drawRing 1s cubic-bezier(0.32, 0.72, 0, 1) both; }
 .pop       { animation: pop 0.34s cubic-bezier(0.32, 0.72, 0, 1) both; }
 .fade-in   { animation: fadeIn 0.25s ease both; }
 .popover-in { transform-origin: top right; animation: popIn 0.22s cubic-bezier(0.32, 0.72, 0, 1) both; }
+.slide-in  { animation: slideIn 0.32s cubic-bezier(0.32, 0.72, 0, 1) both; }
 
-/* Panel hover-lift */
 .panel-lift { transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.45s cubic-bezier(0.32, 0.72, 0, 1); }
 .panel-lift:hover { transform: translateY(-3px); }
-.bar-fill  { animation: growBar 0.95s cubic-bezier(0.32, 0.72, 0, 1) 0.12s both; }
-.bar-grow  { animation: growH 0.8s cubic-bezier(0.32, 0.72, 0, 1) both; }
-.ring-draw { animation: drawRing 1.05s cubic-bezier(0.32, 0.72, 0, 1) both; }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal, .view-in, .bar-fill, .bar-grow, .ring-draw { animation: none !important; }
+  .reveal, .view-in, .bar-fill, .bar-grow, .ring-draw, .pop, .fade-in, .popover-in, .slide-in { animation: none !important; }
+  .panel-lift { transition: none; }
 }

@@ -56,17 +56,17 @@ export const awards = [
 ];
 
 export const courses = [
-  { id: 1, title: "Продукт 2.0", cat: "Обязательный", progress: 88, done: 7, total: 8, emoji: "📦" },
-  { id: 2, title: "Работа с возражениями", cat: "Продажи", progress: 45, done: 5, total: 11, emoji: "🧩" },
-  { id: 3, title: "Переговоры pro", cat: "Продажи", progress: 12, done: 1, total: 9, emoji: "🤝" },
-  { id: 4, title: "CRM за 1 час", cat: "Онбординг", progress: 100, done: 6, total: 6, emoji: "⚙️" },
+  { id: 1, title: "Продукт 2.0", cat: "Обязательный", progress: 88, done: 7, total: 8, icon: "package", tone: "indigo" },
+  { id: 2, title: "Работа с возражениями", cat: "Продажи", progress: 45, done: 5, total: 11, icon: "puzzle", tone: "amber" },
+  { id: 3, title: "Переговоры pro", cat: "Продажи", progress: 12, done: 1, total: 9, icon: "handshake", tone: "mint" },
+  { id: 4, title: "CRM за 1 час", cat: "Онбординг", progress: 100, done: 6, total: 6, icon: "gear", tone: "sky" },
 ];
 
 export const knowledge = [
-  { id: 1, title: "Регламент продаж", tag: "Процессы", emoji: "📘" },
-  { id: 2, title: "Скрипты звонков", tag: "Скрипты", emoji: "📞" },
-  { id: 3, title: "База по продукту", tag: "Продукт", emoji: "🧠" },
-  { id: 4, title: "FAQ для клиентов", tag: "Поддержка", emoji: "💬" },
+  { id: 1, title: "Регламент продаж", tag: "Процессы", icon: "book", tone: "indigo" },
+  { id: 2, title: "Скрипты звонков", tag: "Скрипты", icon: "phone", tone: "mint" },
+  { id: 3, title: "База по продукту", tag: "Продукт", icon: "brain", tone: "pink" },
+  { id: 4, title: "FAQ для клиентов", tag: "Поддержка", icon: "chat", tone: "sky" },
 ];
 
 export const tasks = [

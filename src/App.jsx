@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { House, Wallet, GraduationCap, Trophy, UsersThree, MagnifyingGlass, Bell } from "@phosphor-icons/react";
+import { House, Wallet, GraduationCap, Trophy, UsersThree, MagnifyingGlass, Bell, Gear, Sun, SunHorizon, Moon, MoonStars, Check, X } from "@phosphor-icons/react";
 import { user } from "./data";
-import { cn, Tag, Hand, Bar } from "./ui";
+import { cn, Tag, Hand, Bar, IconTile } from "./ui";
 import Dashboard from "./views/Dashboard";
 import Salary from "./views/Salary";
 import Growth from "./views/Growth";
@@ -17,11 +17,20 @@ const NAV = [
   { id: "team", label: "Команда", Icon: UsersThree, View: Team },
 ];
 
+const ACCENTS = {
+  indigo: { name: "Индиго", c1: "#6a5af0", c2: "#9366f2", soft: "#ece9fe" },
+  violet: { name: "Фиалка", c1: "#8b5cf6", c2: "#c07ef7", soft: "#f1e9fe" },
+  mint: { name: "Мята", c1: "#12b083", c2: "#34d39e", soft: "#dff5ec" },
+  amber: { name: "Янтарь", c1: "#ef9724", c2: "#f7b73e", soft: "#fdeecf" },
+  pink: { name: "Розовый", c1: "#ec4899", c2: "#f472b6", soft: "#fde7f1" },
+  sky: { name: "Небо", c1: "#3b82f6", c2: "#60a5fa", soft: "#e3eefe" },
+};
+
 const NOTIFS = [
-  { id: 1, emoji: "💰", title: "Зарплата за июль начислена", time: "2 часа назад", tone: "bg-mint-soft" },
-  { id: 2, emoji: "🏅", title: "Новая награда: «Марафонец»", time: "вчера", tone: "bg-amber-soft" },
-  { id: 3, emoji: "📚", title: "Назначен курс «Переговоры pro»", time: "2 дня назад", tone: "bg-indigo-soft" },
-  { id: 4, emoji: "⭐", title: "Коллега оценил тебя на 5", time: "3 дня назад", tone: "bg-sky-soft" },
+  { id: 1, icon: "coins", tone: "mint", title: "Зарплата за июль начислена", time: "2 часа назад" },
+  { id: 2, icon: "medal", tone: "amber", title: "Новая награда: «Марафонец»", time: "вчера" },
+  { id: 3, icon: "cap", tone: "indigo", title: "Назначен курс «Переговоры pro»", time: "2 дня назад" },
+  { id: 4, icon: "star", tone: "sky", title: "Коллега оценил тебя на 5", time: "3 дня назад" },
 ];
 
 function greet() {
@@ -30,6 +39,15 @@ function greet() {
   if (h < 12) return "Доброе утро";
   if (h < 18) return "Добрый день";
   return "Добрый вечер";
+}
+
+function GreetIcon() {
+  const h = new Date().getHours();
+  const cls = "ml-2.5 shrink-0";
+  if (h < 6) return <MoonStars size={27} weight="fill" className={cn(cls, "text-accent")} />;
+  if (h < 12) return <SunHorizon size={29} weight="fill" className={cn(cls, "text-amber")} />;
+  if (h < 18) return <Sun size={29} weight="fill" className={cn(cls, "text-amber")} />;
+  return <MoonStars size={27} weight="fill" className={cn(cls, "text-accent")} />;
 }
 
 function NavItem({ item, active, onClick, mobile }) {
@@ -46,12 +64,20 @@ function NavItem({ item, active, onClick, mobile }) {
       {active && (
         <motion.span
           layoutId={mobile ? "np-m" : "np-d"}
-          className={cn("absolute inset-0 -z-10", mobile ? "rounded-2xl bg-white/70" : "rounded-2xl bg-white/80 shadow-soft ring-1 ring-black/[0.04]")}
+          className={cn("absolute inset-0 -z-10 rounded-2xl bg-white/80 shadow-soft ring-1 ring-black/[0.04] dark:bg-white/[0.09] dark:ring-white/10")}
           transition={{ type: "spring", stiffness: 400, damping: 34 }}
         />
       )}
-      <Icon size={mobile ? 21 : 20} weight={active ? "fill" : "regular"} className={active ? "text-indigo" : ""} />
+      <Icon size={mobile ? 21 : 20} weight={active ? "fill" : "regular"} className={active ? "text-accent" : ""} />
       <span className={cn("font-600", mobile ? "text-[10px]" : "text-[14.5px]")}>{label}</span>
+    </button>
+  );
+}
+
+function IconBtn({ children, onClick, className }) {
+  return (
+    <button onClick={onClick} className={cn("relative grid h-11 w-11 place-items-center rounded-2xl glass border panel-edge shadow-soft transition-transform active:scale-95", className)}>
+      {children}
     </button>
   );
 }
@@ -60,17 +86,29 @@ export default function App() {
   const [tab, setTab] = useState("home");
   const [notifOpen, setNotifOpen] = useState(false);
   const [seen, setSeen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [theme, setTheme] = useState("light");
+  const [accent, setAccent] = useState("indigo");
   const active = NAV.find((n) => n.id === tab) ?? NAV[0];
   const View = active.View;
   const pct = Math.round((user.xp / user.xpToNext) * 100);
 
+  useEffect(() => {
+    const r = document.documentElement;
+    r.dataset.theme = theme;
+    const a = ACCENTS[accent];
+    r.style.setProperty("--color-accent", a.c1);
+    r.style.setProperty("--color-accent-2", a.c2);
+    r.style.setProperty("--color-accent-soft", a.soft);
+  }, [theme, accent]);
+
   return (
     <div className="min-h-[100dvh]">
-      {/* Desktop sidebar — floating glass */}
+      {/* Desktop sidebar */}
       <aside className="fixed left-0 top-0 z-40 hidden h-[100dvh] w-[256px] p-4 md:flex">
-        <div className="glass flex h-full w-full flex-col rounded-[26px] border border-white/70 p-3 shadow-lift ring-1 ring-black/[0.04]">
+        <div className="glass flex h-full w-full flex-col rounded-[26px] border panel-edge p-3 shadow-lift">
           <div className="flex items-center gap-2.5 px-2 py-2.5">
-            <span className="grid h-9 w-9 place-items-center rounded-2xl bg-gradient-to-br from-indigo to-violet text-[16px] text-white shadow-soft">✦</span>
+            <span className="grid h-9 w-9 place-items-center rounded-2xl bg-gradient-to-br from-accent to-accent-2 text-[16px] text-white shadow-soft">✦</span>
             <div className="leading-tight">
               <div className="text-[15px] font-800">Моё пространство</div>
               <Tag className="text-ink-mute">employee os</Tag>
@@ -83,8 +121,7 @@ export default function App() {
             ))}
           </nav>
 
-          {/* level mini-card */}
-          <div className="mx-1 mt-5 rounded-2xl bg-gradient-to-br from-indigo to-violet p-3.5 text-white shadow-soft">
+          <div className="mx-1 mt-5 rounded-2xl bg-gradient-to-br from-accent to-accent-2 p-3.5 text-white shadow-soft">
             <div className="flex items-center justify-between">
               <Tag className="text-white/70">Уровень {user.level}</Tag>
               <span className="text-[13px] font-800">{user.levelTitle}</span>
@@ -96,8 +133,8 @@ export default function App() {
             </div>
           </div>
 
-          <div className="mt-auto flex items-center gap-3 rounded-2xl bg-white/45 p-2.5 ring-1 ring-black/[0.04]">
-            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-ink to-ink-soft text-[13px] font-700 text-white">
+          <div className="tile mt-auto flex items-center gap-3 rounded-2xl p-2.5">
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-accent to-accent-2 text-[13px] font-700 text-white">
               {user.initials}
             </div>
             <div className="min-w-0 leading-tight">
@@ -115,36 +152,31 @@ export default function App() {
             <div className="mb-1.5 text-[12.5px] font-600 capitalize text-ink-soft">
               {new Date().toLocaleDateString("ru-RU", { weekday: "long", day: "numeric", month: "long" })}
             </div>
-            <h1 className="text-[30px] font-800 leading-none tracking-tight sm:text-[38px]">
+            <h1 className="flex items-center text-[30px] font-800 leading-none tracking-tight sm:text-[38px]">
               {greet()}, {user.firstName}
-              <span className="ml-2">👋</span>
-              <Hand className="ml-3 hidden text-[26px] text-violet sm:inline">рад видеть!</Hand>
+              <GreetIcon />
+              <Hand className="ml-3 hidden text-[26px] text-accent sm:inline">рад видеть!</Hand>
             </h1>
           </div>
           <div className="flex shrink-0 items-center gap-2">
-            <button className="grid h-11 w-11 place-items-center rounded-2xl glass border border-white/70 shadow-soft ring-1 ring-black/[0.04] transition-transform active:scale-95">
-              <MagnifyingGlass size={18} weight="bold" className="text-ink-soft" />
-            </button>
+            <IconBtn><MagnifyingGlass size={18} weight="bold" className="text-ink-soft" /></IconBtn>
             <div className="relative">
-              <button
-                onClick={() => { setNotifOpen((o) => !o); setSeen(true); }}
-                className="relative grid h-11 w-11 place-items-center rounded-2xl glass border border-white/70 shadow-soft ring-1 ring-black/[0.04] transition-transform active:scale-95"
-              >
+              <IconBtn onClick={() => { setNotifOpen((o) => !o); setSeen(true); }}>
                 <Bell size={18} weight="bold" className="text-ink-soft" />
-                {!seen && <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-pink ring-2 ring-white" />}
-              </button>
+                {!seen && <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-pink ring-2 ring-[color:var(--color-canvas)]" />}
+              </IconBtn>
               {notifOpen && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setNotifOpen(false)} />
-                  <div className="popover-in absolute right-0 top-[52px] z-50 w-[320px] rounded-3xl border border-white/70 glass-strong p-2 shadow-lift ring-1 ring-black/[0.06]">
+                  <div className="popover-in absolute right-0 top-[52px] z-50 w-[320px] rounded-3xl border panel-edge glass-strong p-2 shadow-lift">
                     <div className="flex items-center justify-between px-3 py-2">
                       <Tag className="text-ink-soft">Уведомления</Tag>
-                      <Tag className="text-indigo">{NOTIFS.length} новых</Tag>
+                      <Tag className="text-accent">{NOTIFS.length} новых</Tag>
                     </div>
                     <div className="max-h-[320px] overflow-auto no-scrollbar">
                       {NOTIFS.map((n) => (
-                        <div key={n.id} className="flex items-start gap-3 rounded-2xl p-2.5 transition-colors hover:bg-white/60">
-                          <span className={cn("grid h-9 w-9 shrink-0 place-items-center rounded-xl text-[16px]", n.tone)}>{n.emoji}</span>
+                        <div key={n.id} className="flex items-start gap-3 rounded-2xl p-2.5 transition-colors hover:bg-white/60 dark:hover:bg-white/[0.06]">
+                          <IconTile icon={n.icon} tone={n.tone} size={38} />
                           <div className="min-w-0 flex-1">
                             <div className="text-[13px] font-600 leading-snug">{n.title}</div>
                             <div className="mt-0.5 text-[11px] text-ink-mute">{n.time}</div>
@@ -156,6 +188,7 @@ export default function App() {
                 </>
               )}
             </div>
+            <IconBtn onClick={() => setSettingsOpen(true)}><Gear size={18} weight="bold" className="text-ink-soft" /></IconBtn>
           </div>
         </header>
 
@@ -165,11 +198,56 @@ export default function App() {
       </main>
 
       {/* Mobile bottom nav */}
-      <nav className="glass-strong fixed bottom-4 left-1/2 z-40 flex -translate-x-1/2 items-center gap-1 rounded-[22px] border border-white/70 p-1.5 shadow-lift ring-1 ring-black/[0.04] md:hidden">
+      <nav className="glass-strong fixed bottom-4 left-1/2 z-40 flex -translate-x-1/2 items-center gap-1 rounded-[22px] border panel-edge p-1.5 shadow-lift md:hidden">
         {NAV.map((n) => (
           <NavItem key={n.id} item={n} mobile active={tab === n.id} onClick={() => setTab(n.id)} />
         ))}
       </nav>
+
+      {/* Settings slide-over */}
+      {settingsOpen && (
+        <>
+          <div className="fade-in fixed inset-0 z-[55] bg-ink/30 backdrop-blur-[2px]" onClick={() => setSettingsOpen(false)} />
+          <aside className="slide-in fixed inset-y-0 right-0 z-[56] w-[340px] max-w-[88vw] overflow-y-auto border-l panel-edge glass-strong p-5 shadow-lift no-scrollbar">
+            <div className="flex items-center justify-between">
+              <h2 className="text-[18px] font-800">Настройки</h2>
+              <button onClick={() => setSettingsOpen(false)} className="chip grid h-8 w-8 place-items-center rounded-full transition-opacity hover:opacity-70">
+                <X size={15} weight="bold" />
+              </button>
+            </div>
+
+            <div className="mt-6">
+              <Tag className="text-ink-mute">Оформление</Tag>
+              <div className="mt-3 grid grid-cols-2 gap-2.5">
+                {[["light", "Светлая", Sun], ["dark", "Тёмная", Moon]].map(([val, label, Ico]) => (
+                  <button key={val} onClick={() => setTheme(val)} className={cn("flex flex-col items-center gap-2 rounded-2xl p-4 transition", theme === val ? "tile-2 ring-2 ring-accent" : "tile")}>
+                    <Ico size={22} weight="duotone" className={theme === val ? "text-accent" : "text-ink-soft"} />
+                    <span className="text-[13px] font-700">{label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-7">
+              <Tag className="text-ink-mute">Цветовая гамма</Tag>
+              <div className="mt-3 grid grid-cols-3 gap-2.5">
+                {Object.entries(ACCENTS).map(([key, a]) => (
+                  <button key={key} onClick={() => setAccent(key)} className={cn("flex flex-col items-center gap-2 rounded-2xl p-3 transition", accent === key ? "tile-2 ring-2 ring-accent" : "tile")}>
+                    <span className="grid h-9 w-9 place-items-center rounded-full text-white shadow-soft" style={{ background: `linear-gradient(135deg, ${a.c1}, ${a.c2})` }}>
+                      {accent === key && <Check size={16} weight="bold" />}
+                    </span>
+                    <span className="text-[11px] font-700">{a.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <p className="mt-7 text-[11.5px] leading-relaxed text-ink-mute">
+              Тема и акцент применяются мгновенно. В реальном кабинете сохранятся для каждого сотрудника.
+            </p>
+          </aside>
+        </>
+      )}
     </div>
   );
 }

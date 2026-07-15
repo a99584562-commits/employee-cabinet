@@ -3,7 +3,7 @@ import { ArrowUpRight, Info, Eye, EyeSlash } from "@phosphor-icons/react";
 import { salary, sources } from "../data";
 import { Panel, PanelHead, Tag, Hand, CountUp, Reveal, rub, cn } from "../ui";
 
-const SEG = ["var(--color-indigo)", "var(--color-mint)", "var(--color-amber)"];
+const SEG = ["var(--color-accent)", "var(--color-mint)", "var(--color-amber)"];
 
 export default function Salary() {
   const delta = (((salary.total - salary.prevTotal) / salary.prevTotal) * 100).toFixed(1);
@@ -20,19 +20,15 @@ export default function Salary() {
                 {hidden ? "••• •••" : <CountUp to={salary.total} format={(v) => new Intl.NumberFormat("ru-RU").format(Math.round(v))} />}
               </span>
               <span className="pb-2.5 text-3xl font-600 text-ink-mute">₽</span>
-              <button
-                onClick={() => setHidden((h) => !h)}
-                title={hidden ? "Показать" : "Скрыть"}
-                className="mb-3 grid h-9 w-9 place-items-center rounded-full text-ink-mute transition-colors hover:bg-black/5 hover:text-ink-soft"
-              >
-                {hidden ? <Eye size={19} weight="regular" /> : <EyeSlash size={19} weight="regular" />}
+              <button onClick={() => setHidden((h) => !h)} title={hidden ? "Показать" : "Скрыть"} className="mb-3 grid h-9 w-9 place-items-center rounded-full text-ink-mute transition-colors hover:bg-ink/5 hover:text-ink-soft">
+                {hidden ? <Eye size={19} /> : <EyeSlash size={19} />}
               </button>
             </div>
             <div className="mt-3 flex items-center gap-3">
               <span className="flex items-center gap-1 rounded-full bg-mint-soft px-2.5 py-1 text-mint">
                 <ArrowUpRight size={13} weight="bold" /><span className="text-[12.5px] font-700">+{delta}%</span>
               </span>
-              <Hand className="text-[20px] text-violet">лучший месяц в году!</Hand>
+              <Hand className="text-[20px] text-accent">лучший месяц в году!</Hand>
             </div>
 
             <div className="mt-7 flex h-3 w-full overflow-hidden rounded-full">
@@ -40,7 +36,7 @@ export default function Salary() {
                 <div key={b.label} style={{ width: `${(b.amount / salary.total) * 100}%`, background: SEG[i] }} />
               ))}
             </div>
-            <div className="mt-4 divide-y divide-black/[0.06]">
+            <div className="divide-line mt-4">
               {salary.breakdown.map((b, i) => (
                 <div key={b.label} className="flex items-center gap-3 py-2.5">
                   <span className="h-3 w-3 rounded-full" style={{ background: SEG[i] }} />
@@ -53,7 +49,7 @@ export default function Salary() {
               <Tag className="text-ink-soft">Выплата 05.08.2026</Tag>
               <div className="flex flex-wrap gap-1.5">
                 {sources.map((s) => (
-                  <span key={s} className="rounded-full bg-white/60 px-2.5 py-1 ring-1 ring-black/[0.05]"><Tag className="text-ink-mute">{s}</Tag></span>
+                  <span key={s} className="chip rounded-full px-2.5 py-1"><Tag className="text-ink-mute">{s}</Tag></span>
                 ))}
               </div>
             </div>
@@ -71,12 +67,12 @@ export default function Salary() {
             </p>
             <div className="mt-auto space-y-2 pt-6">
               {[["Оклад", "45 000 ₽"], ["92% плана × ставка", "+32 400 ₽"], ["Премия · наставник", "+10 000 ₽"]].map(([l, v]) => (
-                <div key={l} className="flex items-center justify-between gap-3 rounded-2xl bg-white/55 px-4 py-2.5 ring-1 ring-white/50">
+                <div key={l} className="tile-2 flex items-center justify-between gap-3 rounded-2xl px-4 py-2.5">
                   <span className="text-[13px] font-500">{l}</span>
                   <span className="shrink-0 whitespace-nowrap text-[13px] font-700">{v}</span>
                 </div>
               ))}
-              <div className="flex items-center justify-between gap-3 rounded-2xl bg-ink px-4 py-3 text-white">
+              <div className="flex items-center justify-between gap-3 rounded-2xl bg-obsidian px-4 py-3 text-white">
                 <span className="text-[13px] font-700">Итого</span>
                 <span className="shrink-0 whitespace-nowrap text-[14px] font-700">{rub(salary.total)}</span>
               </div>
@@ -94,9 +90,9 @@ export default function Salary() {
                 const last = i === salary.history.length - 1;
                 return (
                   <div key={h.m} className="flex flex-1 flex-col items-center gap-2.5">
-                    <span className={cn("text-[12px] font-700", last ? "text-indigo" : "text-ink-mute")}>{Math.round(h.v / 1000)}к</span>
+                    <span className={cn("text-[12px] font-700", last ? "text-accent" : "text-ink-mute")}>{Math.round(h.v / 1000)}к</span>
                     <div
-                      className={cn("bar-grow w-full rounded-xl", last ? "bg-gradient-to-t from-indigo to-violet" : "bg-ink/[0.08]")}
+                      className={cn("bar-grow w-full rounded-xl", last ? "bg-gradient-to-t from-accent to-accent-2" : "bg-ink/[0.10]")}
                       style={{ "--h": `${(h.v / max) * 150 + 12}px`, height: `${(h.v / max) * 150 + 12}px`, animationDelay: `${0.15 + i * 0.06}s` }}
                     />
                     <span className="text-[11.5px] font-500 text-ink-mute">{h.m}</span>

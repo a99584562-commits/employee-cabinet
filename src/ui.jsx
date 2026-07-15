@@ -1,5 +1,27 @@
 import { useEffect, useId, useState } from "react";
-import { Trophy, GraduationCap, Lightning, Fire, Target, Diamond, Crown, Rocket, Lock } from "@phosphor-icons/react";
+import {
+  Trophy, GraduationCap, Lightning, Fire, Target, Diamond, Crown, Rocket, Lock,
+  Package, PuzzlePiece, Handshake, Gear, BookOpen, Phone, Brain, ChatCircleDots, Coins, Medal, Star, HandWaving,
+} from "@phosphor-icons/react";
+
+const ICONS = {
+  package: Package, puzzle: PuzzlePiece, handshake: Handshake, gear: Gear,
+  book: BookOpen, phone: Phone, brain: Brain, chat: ChatCircleDots,
+  coins: Coins, medal: Medal, cap: GraduationCap, star: Star, wave: HandWaving,
+};
+
+/* Soft coloured icon tile (replaces emoji) */
+export function IconTile({ icon, tone = "indigo", size = 44, rounded = "rounded-xl", className }) {
+  const Icon = ICONS[icon] ?? Package;
+  return (
+    <div
+      className={cn("grid shrink-0 place-items-center", rounded, className)}
+      style={{ width: size, height: size, background: `var(--color-${tone}-soft)`, color: `var(--color-${tone})` }}
+    >
+      <Icon size={Math.round(size * 0.52)} weight="duotone" />
+    </div>
+  );
+}
 
 export const cn = (...a) => a.filter(Boolean).join(" ");
 
@@ -24,9 +46,9 @@ export function Reveal({ children, delay = 0, className }) {
 
 /* Frosted glass panel */
 const TONES = {
-  card: "glass border-white/70 ring-1 ring-black/[0.04] text-ink",
-  strong: "glass-strong border-white/80 ring-1 ring-black/[0.04] text-ink",
-  accent: "glass-accent border-white/50 ring-1 ring-white/30 text-ink",
+  card: "glass panel-edge text-ink",
+  strong: "glass-strong panel-edge text-ink",
+  accent: "glass-accent panel-edge text-ink",
   dark: "glass-dark border-white/10 text-white",
 };
 export function Panel({ children, className, tone = "card", lift = true }) {
@@ -136,7 +158,7 @@ export function Badge({ icon, tier = "common", earned = true, size = 76, onClick
           <Icon size={size * 0.4} weight="fill" color={earned ? "#fff" : "#B4AFC0"} />
         </div>
         {!earned && (
-          <div className="absolute bottom-0 right-0 grid place-items-center rounded-full bg-ink ring-2 ring-white/80" style={{ height: size * 0.3, width: size * 0.3 }}>
+          <div className="absolute bottom-0 right-0 grid place-items-center rounded-full bg-obsidian ring-2 ring-white/80" style={{ height: size * 0.3, width: size * 0.3 }}>
             <Lock size={size * 0.15} weight="fill" color="#fff" />
           </div>
         )}
@@ -167,7 +189,7 @@ export function CountUp({ to, format = (v) => Math.round(v), className }) {
 }
 
 /* Circular progress ring */
-export function Ring({ value, size = 66, stroke = 7, color = "var(--color-indigo)", track = "rgba(35,32,48,0.08)", children }) {
+export function Ring({ value, size = 66, stroke = 7, color = "var(--color-accent)", track = "var(--ring-track)", children }) {
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
   const off = c - (Math.min(value, 100) / 100) * c;
@@ -194,7 +216,7 @@ export function Ring({ value, size = 66, stroke = 7, color = "var(--color-indigo
 }
 
 /* Linear progress bar */
-export function Bar({ value, color = "var(--color-indigo)", track = "rgba(35,32,48,0.09)", className }) {
+export function Bar({ value, color = "var(--color-accent)", track = "var(--ring-track)", className }) {
   const w = `${Math.min(value, 100)}%`;
   return (
     <div className={cn("h-2 w-full overflow-hidden rounded-full", className)} style={{ background: track }}>
