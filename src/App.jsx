@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { House, Wallet, GraduationCap, Trophy, UsersThree, Bell } from "@phosphor-icons/react";
-import { user } from "./data";
-import { cn } from "./ui";
+import { House, Wallet, GraduationCap, Trophy, UsersThree, MagnifyingGlass, Bell } from "@phosphor-icons/react";
+import { user, salary, team } from "./data";
+import { cn, Ticker, Tag, Hand, DotGrid } from "./ui";
 import Dashboard from "./views/Dashboard";
 import Salary from "./views/Salary";
 import Growth from "./views/Growth";
@@ -10,11 +10,17 @@ import Awards from "./views/Awards";
 import Team from "./views/Team";
 
 const NAV = [
-  { id: "home", label: "Главная", Icon: House, View: Dashboard },
-  { id: "salary", label: "Зарплата", Icon: Wallet, View: Salary },
-  { id: "growth", label: "Развитие", Icon: GraduationCap, View: Growth },
-  { id: "awards", label: "Награды", Icon: Trophy, View: Awards },
-  { id: "team", label: "Команда", Icon: UsersThree, View: Team },
+  { id: "home", no: "01", label: "Главная", code: "HOME", Icon: House, View: Dashboard },
+  { id: "salary", no: "02", label: "Зарплата", code: "SLRY", Icon: Wallet, View: Salary },
+  { id: "growth", no: "03", label: "Развитие", code: "GRWT", Icon: GraduationCap, View: Growth },
+  { id: "awards", no: "04", label: "Награды", code: "AWRD", Icon: Trophy, View: Awards },
+  { id: "team", no: "05", label: "Команда", code: "TEAM", Icon: UsersThree, View: Team },
+];
+
+const TICKER = [
+  "МОЁ ПРОСТРАНСТВО", "КАБИНЕТ СОТРУДНИКА", "ИЮЛЬ 2026",
+  "УРОВЕНЬ 07 · ПРОФИ", `СТРИК ${user.streakDays}`, `#${team.myRank}/${team.total} В КОМАНДЕ`,
+  "ЗП 87 400 ₽", "0xF1E500",
 ];
 
 function greet() {
@@ -25,41 +31,24 @@ function greet() {
   return "Добрый вечер";
 }
 
-function Brand() {
-  return (
-    <div className="flex items-center gap-2.5 px-3">
-      <div className="grid h-9 w-9 place-items-center rounded-xl bg-ink text-[17px]">🌱</div>
-      <div className="leading-tight">
-        <div className="font-display text-[15px] font-600 tracking-tight">Моё</div>
-        <div className="text-[11px] font-500 text-ink-mute -mt-0.5">пространство</div>
-      </div>
-    </div>
-  );
-}
-
-function NavItem({ item, active, onClick, mobile }) {
-  const { Icon, label } = item;
+function SideItem({ item, active, onClick }) {
+  const { no, label, code, Icon } = item;
   return (
     <button
       onClick={onClick}
       className={cn(
-        "group relative flex items-center transition-colors duration-300",
-        mobile ? "flex-col gap-1 px-3 py-1.5" : "w-full gap-3 rounded-2xl px-3.5 py-2.5",
-        active ? "text-ink" : "text-ink-mute hover:text-ink-soft"
+        "group relative flex w-full items-center gap-3 border-b border-ink/12 px-4 py-3 text-left transition-colors duration-200",
+        active ? "bg-ink text-paper" : "hover:bg-paper-2"
       )}
     >
-      {active && (
-        <motion.span
-          layoutId={mobile ? "navpill-m" : "navpill-d"}
-          className={cn(
-            "absolute inset-0 -z-10",
-            mobile ? "rounded-2xl bg-flame-soft" : "rounded-2xl bg-white shadow-soft ring-1 ring-[--color-hairline]"
-          )}
-          transition={{ type: "spring", stiffness: 380, damping: 34 }}
-        />
+      <span className={cn("mono text-[11px]", active ? "text-yellow" : "text-mute")}>{no}</span>
+      <Icon size={18} weight={active ? "fill" : "regular"} className="shrink-0" />
+      <span className="flex-1 text-[15px] font-600">{label}</span>
+      {active ? (
+        <span className="mono text-[14px] text-yellow">→</span>
+      ) : (
+        <span className="mono text-[10px] text-mute opacity-0 transition-opacity group-hover:opacity-100">{code}</span>
       )}
-      <Icon size={mobile ? 22 : 21} weight={active ? "fill" : "regular"} className={active && mobile ? "text-flame" : ""} />
-      <span className={cn(mobile ? "text-[10px] font-600" : "text-[14px] font-600")}>{label}</span>
     </button>
   );
 }
@@ -68,63 +57,111 @@ export default function App() {
   const [tab, setTab] = useState("home");
   const active = NAV.find((n) => n.id === tab) ?? NAV[0];
   const View = active.View;
+  const now = new Date();
+  const dateStr = now.toLocaleDateString("ru-RU", { weekday: "short", day: "2-digit", month: "2-digit", year: "numeric" });
 
   return (
-    <div className="min-h-[100dvh] w-full">
-      {/* Desktop sidebar — floating, detached */}
-      <aside className="fixed left-0 top-0 z-40 hidden h-[100dvh] w-[248px] flex-col p-5 md:flex">
-        <div className="flex h-full flex-col rounded-[1.75rem] bg-gradient-to-b from-white/70 to-white/25 p-3 ring-1 ring-[--color-hairline] shadow-soft backdrop-blur-sm">
-          <div className="py-3">
-            <Brand />
+    <div className="min-h-[100dvh]">
+      {/* Top ticker */}
+      <Ticker items={TICKER} className="fixed inset-x-0 top-0 z-50 border-b border-ink" />
+
+      {/* Desktop sidebar */}
+      <aside className="fixed bottom-0 left-0 top-[30px] z-40 hidden w-[254px] flex-col border-r border-ink bg-card md:flex">
+        <div className="border-b border-ink px-4 py-4">
+          <div className="flex items-center gap-2">
+            <span className="grid h-7 w-7 place-items-center bg-ink text-[15px] leading-none text-yellow">✦</span>
+            <div className="leading-none">
+              <div className="text-[15px] font-800 uppercase tracking-tight">Моё</div>
+              <Tag className="text-mute">пространство</Tag>
+            </div>
           </div>
-          <nav className="mt-4 flex flex-col gap-1">
-            {NAV.map((n) => (
-              <NavItem key={n.id} item={n} active={tab === n.id} onClick={() => setTab(n.id)} />
-            ))}
-          </nav>
-          <div className="mt-auto">
-            <div className="flex items-center gap-3 rounded-2xl bg-surface-2 p-2.5 ring-1 ring-[--color-hairline]">
-              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-ink font-display text-[13px] font-600 text-canvas">
-                {user.initials}
-              </div>
-              <div className="min-w-0 leading-tight">
-                <div className="truncate text-[13px] font-700">{user.firstName} {user.lastName}</div>
-                <div className="truncate text-[11px] text-ink-mute">{user.role}</div>
-              </div>
+          <div className="mt-3 flex items-center justify-between">
+            <Tag className="text-mute">EMPLOYEE OS</Tag>
+            <Tag className="text-mute">v2.6</Tag>
+          </div>
+        </div>
+
+        <nav className="border-b border-ink">
+          {NAV.map((n) => (
+            <SideItem key={n.id} item={n} active={tab === n.id} onClick={() => setTab(n.id)} />
+          ))}
+        </nav>
+
+        {/* filler / technical block */}
+        <div className="relative flex-1 overflow-hidden">
+          <DotGrid className="absolute inset-x-4 top-5 h-16 text-ink/20" />
+          <Hand className="absolute left-4 top-24 text-[20px] -rotate-6 text-ink/70">всё под рукой ▾</Hand>
+        </div>
+
+        <div className="border-t border-ink p-3">
+          <div className="flex items-center gap-3">
+            <div className="grid h-10 w-10 shrink-0 place-items-center bg-ink font-mono text-[13px] font-700 text-yellow">
+              {user.initials}
+            </div>
+            <div className="min-w-0 leading-tight">
+              <div className="truncate text-[13px] font-700">{user.firstName} {user.lastName}</div>
+              <Tag className="text-mute">EMP · 0417</Tag>
             </div>
           </div>
         </div>
       </aside>
 
       {/* Main */}
-      <main className="mx-auto w-full max-w-[1120px] px-4 pb-28 pt-6 md:pl-[248px] md:pr-6 md:pb-10 md:pt-8">
-        {/* Top greeting bar */}
-        <header className="mb-7 flex items-center justify-between gap-4">
-          <div>
-            <div className="mb-1 flex items-center gap-2 text-[12px] font-600 uppercase tracking-[0.16em] text-ink-mute">
-              {new Date().toLocaleDateString("ru-RU", { weekday: "long", day: "numeric", month: "long" })}
+      <main className="min-h-[100dvh] pt-[30px] pb-28 md:pb-0 md:pl-[254px]">
+        <div className="px-4 py-6 sm:px-7 sm:py-8">
+          {/* Header */}
+          <header className="mb-7 flex items-start justify-between gap-4 border-b border-ink pb-6">
+            <div className="min-w-0">
+              <div className="mb-2.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+                <Tag className="text-mute">{dateStr}</Tag>
+                <span className="hidden h-3 w-px bg-ink/20 sm:block" />
+                <Tag className="text-mute">
+                  {now.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" })}<span className="blink">_</span>
+                </Tag>
+              </div>
+              <h1 className="text-[34px] font-800 uppercase leading-[0.92] tracking-tight sm:text-[52px]">
+                {greet()},<br className="sm:hidden" /> {user.firstName}
+                <Hand className="ml-3 hidden text-[30px] text-pink sm:inline">рад видеть!</Hand>
+              </h1>
             </div>
-            <h1 className="font-display text-[26px] font-600 leading-none tracking-tight sm:text-[32px]">
-              {greet()}, {user.firstName}
-              <span className="ml-2 inline-block">👋</span>
-            </h1>
-          </div>
-          <button className="relative grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-surface ring-1 ring-[--color-hairline] shadow-soft transition-transform duration-300 active:scale-95">
-            <Bell size={20} weight="regular" className="text-ink-soft" />
-            <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-flame ring-2 ring-surface" />
-          </button>
-        </header>
+            <div className="flex shrink-0 items-center gap-2">
+              <button className="grid h-10 w-10 place-items-center border border-ink bg-card transition-colors hover:bg-paper-2">
+                <MagnifyingGlass size={17} weight="bold" />
+              </button>
+              <button className="relative grid h-10 w-10 place-items-center border border-ink bg-card transition-colors hover:bg-paper-2">
+                <Bell size={17} weight="bold" />
+                <span className="absolute right-1.5 top-1.5 h-2 w-2 bg-pink" />
+              </button>
+              <span className="hidden border border-ink px-2.5 py-2.5 md:block">
+                <Tag>RU</Tag>
+              </span>
+            </div>
+          </header>
 
-        <div key={tab} className="view-in">
-          <View />
+          <div key={tab} className="view-in">
+            <View />
+          </div>
         </div>
       </main>
 
-      {/* Mobile bottom nav — floating pill */}
-      <nav className="fixed bottom-4 left-1/2 z-40 flex -translate-x-1/2 items-center gap-1 rounded-[1.5rem] bg-white/80 p-1.5 ring-1 ring-[--color-hairline] shadow-lift backdrop-blur-xl md:hidden">
-        {NAV.map((n) => (
-          <NavItem key={n.id} item={n} mobile active={tab === n.id} onClick={() => setTab(n.id)} />
-        ))}
+      {/* Mobile bottom nav */}
+      <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-ink bg-card md:hidden">
+        {NAV.map((n) => {
+          const on = tab === n.id;
+          return (
+            <button
+              key={n.id}
+              onClick={() => setTab(n.id)}
+              className={cn(
+                "relative flex flex-1 flex-col items-center gap-1 border-r border-ink/12 py-2.5 last:border-r-0",
+                on ? "bg-yellow" : ""
+              )}
+            >
+              <n.Icon size={20} weight={on ? "fill" : "regular"} />
+              <span className="mono text-[9px] uppercase tracking-wider">{n.code}</span>
+            </button>
+          );
+        })}
       </nav>
     </div>
   );

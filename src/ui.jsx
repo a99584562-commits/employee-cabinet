@@ -5,7 +5,6 @@ export const cn = (...a) => a.filter(Boolean).join(" ");
 export const rub = (n) =>
   new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 0 }).format(n) + " ₽";
 
-/* Russian plural: plural(34, ["день","дня","дней"]) → "дня" */
 export const plural = (n, [one, few, many]) => {
   const m10 = n % 10;
   const m100 = n % 100;
@@ -14,7 +13,6 @@ export const plural = (n, [one, few, many]) => {
   return many;
 };
 
-/* Gentle fade-up + de-blur on mount — pure CSS, cannot stall */
 export function Reveal({ children, delay = 0, className }) {
   return (
     <div className={cn("reveal", className)} style={{ animationDelay: `${delay}s` }}>
@@ -23,38 +21,69 @@ export function Reveal({ children, delay = 0, className }) {
   );
 }
 
-/* Double-bezel card: aluminium tray holding a glass plate */
-export function Card({ children, className, inner, tint, hover = true }) {
+/* Flat brutalist panel with hairline border */
+const TONES = {
+  card: "bg-card text-ink border-ink",
+  paper: "bg-paper-2 text-ink border-ink",
+  yellow: "bg-yellow text-ink border-ink",
+  ink: "bg-ink text-paper border-ink",
+  pink: "bg-pink text-ink border-ink",
+  blue: "bg-blue text-paper border-ink",
+};
+export function Panel({ children, className, tone = "card" }) {
+  return <div className={cn("border", TONES[tone], className)}>{children}</div>;
+}
+
+/* Mono technical label */
+export function Tag({ children, className }) {
   return (
-    <div
-      className={cn(
-        "bezel-outer p-1.5 ring-1 ring-[--color-hairline]",
-        "bg-gradient-to-b from-white/70 to-white/20 shadow-soft",
-        hover && "transition-shadow duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-lift",
-        className
-      )}
-    >
-      <div
-        className={cn(
-          "bezel-inner h-full bg-surface",
-          "shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)]",
-          inner
-        )}
-        style={tint ? { background: tint } : undefined}
-      >
-        {children}
+    <span className={cn("mono text-[10.5px] uppercase tracking-[0.18em]", className)}>{children}</span>
+  );
+}
+
+/* Panel header: index + title + optional right meta */
+export function PanelHead({ no, title, right, onDark }) {
+  return (
+    <div className={cn("flex items-center justify-between border-b px-5 py-3", onDark ? "border-paper/20" : "border-ink/12")}>
+      <div className="flex items-center gap-2.5">
+        <span className={cn("mono text-[11px]", onDark ? "text-yellow" : "text-mute")}>{no}</span>
+        <Tag>{title}</Tag>
+      </div>
+      {right && <Tag className={onDark ? "text-paper/50" : "text-mute"}>{right}</Tag>}
+    </div>
+  );
+}
+
+/* Handwritten annotation */
+export function Hand({ children, className }) {
+  return <span className={cn("hand leading-none", className)}>{children}</span>;
+}
+
+/* Technical dot-matrix decoration (uses currentColor) */
+export function DotGrid({ className, style }) {
+  return <div className={cn("dotgrid", className)} style={style} aria-hidden />;
+}
+
+/* Scrolling marquee ticker */
+export function Ticker({ items, tone = "ink", fast, className }) {
+  const row = items.join("   ///   ");
+  return (
+    <div className={cn("overflow-hidden", tone === "ink" ? "bg-ink text-yellow" : "bg-yellow text-ink", className)}>
+      <div className={cn("marquee py-1.5", fast && "marquee-fast")}>
+        <span className="mono whitespace-pre pr-8 text-[11px] uppercase tracking-[0.22em]">{row}   ///   </span>
+        <span className="mono whitespace-pre pr-8 text-[11px] uppercase tracking-[0.22em]" aria-hidden>{row}   ///   </span>
       </div>
     </div>
   );
 }
 
-/* Animated number — counts up on mount via plain rAF */
+/* Count-up number */
 export function CountUp({ to, format = (v) => Math.round(v), className }) {
   const [val, setVal] = useState(0);
   useEffect(() => {
     let raf;
     let startTs;
-    const dur = 1100;
+    const dur = 1000;
     const tick = (now) => {
       if (startTs === undefined) startTs = now;
       const t = Math.min(1, (now - startTs) / dur);
@@ -69,8 +98,8 @@ export function CountUp({ to, format = (v) => Math.round(v), className }) {
   return <span className={className}>{format(val)}</span>;
 }
 
-/* Circular progress ring — draws on mount via CSS animation */
-export function Ring({ value, size = 64, stroke = 7, color = "var(--color-kpi)", track = "rgba(45,35,20,0.07)", children }) {
+/* Circular progress ring */
+export function Ring({ value, size = 64, stroke = 6, color = "var(--color-ink)", track = "rgba(16,16,16,0.12)", children }) {
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
   const off = c - (Math.min(value, 100) / 100) * c;
@@ -86,7 +115,7 @@ export function Ring({ value, size = 64, stroke = 7, color = "var(--color-kpi)",
           fill="none"
           stroke={color}
           strokeWidth={stroke}
-          strokeLinecap="round"
+          strokeLinecap="butt"
           strokeDasharray={c}
           style={{ "--c": c, "--off": off, strokeDashoffset: off }}
         />
@@ -96,12 +125,12 @@ export function Ring({ value, size = 64, stroke = 7, color = "var(--color-kpi)",
   );
 }
 
-/* Linear progress bar — grows on mount via CSS animation */
-export function Bar({ value, color = "var(--color-flame)", className }) {
+/* Linear progress bar */
+export function Bar({ value, color = "var(--color-ink)", track = "rgba(16,16,16,0.12)", className }) {
   const w = `${Math.min(value, 100)}%`;
   return (
-    <div className={cn("h-2 w-full overflow-hidden rounded-full bg-[rgba(45,35,20,0.07)]", className)}>
-      <div className="bar-fill h-full rounded-full" style={{ "--w": w, width: w, background: color }} />
+    <div className={cn("h-1.5 w-full overflow-hidden", className)} style={{ background: track }}>
+      <div className="bar-fill h-full" style={{ "--w": w, width: w, background: color }} />
     </div>
   );
 }
