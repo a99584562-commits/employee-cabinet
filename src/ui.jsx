@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import {
   Trophy, GraduationCap, Lightning, Fire, Target, Diamond, Crown, Rocket, Lock,
   Package, PuzzlePiece, Handshake, Gear, BookOpen, Phone, Brain, ChatCircleDots, Coins, Medal, Star,
-  UmbrellaSimple, FileText, Clock, CalendarBlank, EnvelopeSimple, Buildings, MapPin, Cake, IdentificationBadge,
+  UmbrellaSimple, FileText, Clock, CalendarBlank, EnvelopeSimple, Buildings, MapPin, Cake, IdentificationBadge, Check, Minus,
 } from "@phosphor-icons/react";
 
 const ICONS = {
@@ -114,11 +114,26 @@ export function Hand({ children, className }) {
   return <span className={cn("font-hand leading-none", className)}>{children}</span>;
 }
 
-/* Toggle switch */
+/* Toggle switch — knob carries a state icon */
 export function Switch({ on, onChange }) {
   return (
-    <button onClick={onChange} className={cn("relative h-6 w-10 shrink-0 rounded-full transition-colors", on ? "bg-accent" : "bg-ink/[0.15] dark:bg-white/20")}>
-      <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-soft transition-transform duration-200", on ? "translate-x-[18px]" : "translate-x-0.5")} />
+    <button
+      onClick={onChange}
+      role="switch"
+      aria-checked={on}
+      className={cn(
+        "relative h-[26px] w-[46px] shrink-0 rounded-full transition-colors duration-300",
+        on ? "bg-gradient-to-r from-accent to-accent-2 shadow-[inset_0_1px_2px_rgba(255,255,255,0.4)]" : "bg-ink/[0.13] shadow-[inset_0_1px_2px_rgba(20,15,40,0.12)] dark:bg-white/[0.14]"
+      )}
+    >
+      <span
+        className={cn(
+          "absolute left-[2px] top-[2px] grid h-[22px] w-[22px] place-items-center rounded-full bg-white shadow-[0_1px_3px_rgba(20,15,40,0.28)] transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]",
+          on ? "translate-x-[20px]" : "translate-x-0"
+        )}
+      >
+        {on ? <Check size={12} weight="bold" className="text-accent" /> : <Minus size={12} weight="bold" className="text-ink-mute" />}
+      </span>
     </button>
   );
 }
