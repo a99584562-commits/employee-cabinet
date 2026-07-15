@@ -1,4 +1,5 @@
 import { useEffect, useId, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   Trophy, GraduationCap, Lightning, Fire, Target, Diamond, Crown, Rocket, Lock,
   Package, PuzzlePiece, Handshake, Gear, BookOpen, Phone, Brain, ChatCircleDots, Coins, Medal, Star,
@@ -62,16 +63,24 @@ export function Panel({ children, className, tone = "card", lift = true }) {
   );
 }
 
+/* Renders children into <body>, escaping any transformed ancestor */
+export function Portal({ children }) {
+  if (typeof document === "undefined") return null;
+  return createPortal(children, document.body);
+}
+
 /* Glass modal */
 export function Modal({ open, onClose, children }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-[60] grid place-items-center p-4">
-      <div className="fade-in absolute inset-0 bg-ink/35 backdrop-blur-[3px]" onClick={onClose} />
-      <div className="glass-strong pop relative w-full max-w-sm overflow-hidden rounded-[28px] border border-white/70 p-6 text-center shadow-lift ring-1 ring-black/[0.06]">
-        {children}
+    <Portal>
+      <div className="fixed inset-0 z-[100] grid place-items-center p-4">
+        <div className="fade-in absolute inset-0 bg-ink/40 backdrop-blur-[3px]" onClick={onClose} />
+        <div className="glass-strong pop relative w-full max-w-sm overflow-hidden rounded-[28px] border panel-edge p-6 text-center shadow-lift">
+          {children}
+        </div>
       </div>
-    </div>
+    </Portal>
   );
 }
 

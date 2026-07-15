@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Check, X, Clock, CheckSquare, Square } from "@phosphor-icons/react";
 import { approvalQueue, declineReasons } from "../data";
-import { Panel, PanelHead, Tag, IconTile, Modal, Reveal, cn } from "../ui";
+import { Panel, PanelHead, Tag, IconTile, Modal, Portal, Reveal, cn } from "../ui";
 
 const KIND = {
   vacation: { icon: "umbrella", tone: "mint" },
@@ -233,12 +233,14 @@ export default function Approvals() {
       </Modal>
 
       {toast && (
-        <div className="slide-in fixed bottom-24 left-1/2 z-[70] flex -translate-x-1/2 items-center gap-2.5 rounded-full border panel-edge glass-strong px-4 py-2.5 shadow-lift md:bottom-8">
-          <span className={cn("grid h-6 w-6 place-items-center rounded-full text-white", toast.ok ? "bg-mint" : "bg-pink")}>
-            {toast.ok ? <Check size={13} weight="bold" /> : <X size={13} weight="bold" />}
-          </span>
-          <span className="text-[13px] font-600">{toast.msg}</span>
-        </div>
+        <Portal>
+          <div className="slide-in fixed bottom-24 left-1/2 z-[110] flex -translate-x-1/2 items-center gap-2.5 rounded-full border panel-edge glass-strong px-4 py-2.5 shadow-lift md:bottom-8">
+            <span className={cn("grid h-6 w-6 place-items-center rounded-full text-white", toast.ok ? "bg-mint" : "bg-pink")}>
+              {toast.ok ? <Check size={13} weight="bold" /> : <X size={13} weight="bold" />}
+            </span>
+            <span className="text-[13px] font-600">{toast.msg}</span>
+          </div>
+        </Portal>
       )}
     </div>
   );
