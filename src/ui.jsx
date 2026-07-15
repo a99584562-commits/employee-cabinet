@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
+import { Trophy, GraduationCap, Lightning, Fire, Target, Diamond, Crown, Rocket, Lock } from "@phosphor-icons/react";
 
 export const cn = (...a) => a.filter(Boolean).join(" ");
 
@@ -64,6 +65,59 @@ export function PanelHead({ no, title, right, onDark }) {
 /* Handwritten accent */
 export function Hand({ children, className }) {
   return <span className={cn("font-hand leading-none", className)}>{children}</span>;
+}
+
+/* ————— Achievement medal (custom SVG, not emoji) ————— */
+const BADGE_ICONS = { trophy: Trophy, cap: GraduationCap, bolt: Lightning, fire: Fire, target: Target, diamond: Diamond, crown: Crown, rocket: Rocket };
+const TIERS = {
+  legendary: { c1: "#FFEDB0", c2: "#F3BA4A", c3: "#C57F1C", rim: "#9E620C", glow: "rgba(243,178,74,0.60)", chip: "var(--color-amber)" },
+  rare: { c1: "#DcC9FF", c2: "#9B6BF5", c3: "#6D28D9", rim: "#571FA8", glow: "rgba(140,90,245,0.52)", chip: "var(--color-violet)" },
+  common: { c1: "#F5F8FF", c2: "#C6D2EA", c3: "#93A3C6", rim: "#7A8AAD", glow: "rgba(120,150,220,0.34)", chip: "var(--color-sky)" },
+};
+const LOCKED = { c1: "#EFEDF4", c2: "#DEDBE8", c3: "#CAC6D6", rim: "#BFBACC", glow: "transparent" };
+
+export const tierMeta = (tier) => TIERS[tier] ?? TIERS.common;
+
+export function Badge({ icon, tier = "common", earned = true, size = 76 }) {
+  const uid = useId().replace(/:/g, "");
+  const t = earned ? (TIERS[tier] ?? TIERS.common) : LOCKED;
+  const Icon = BADGE_ICONS[icon] ?? Trophy;
+  const bumps = Array.from({ length: 12 }, (_, i) => {
+    const a = (i / 12) * Math.PI * 2;
+    return [50 + Math.cos(a) * 34, 50 + Math.sin(a) * 34];
+  });
+  return (
+    <div className="relative shrink-0" style={{ width: size, height: size }}>
+      {earned && <div className="absolute inset-[16%] rounded-full blur-[10px]" style={{ background: t.glow }} />}
+      <svg viewBox="0 0 100 100" width={size} height={size} className="relative block">
+        <defs>
+          <radialGradient id={`f${uid}`} cx="50%" cy="30%" r="75%">
+            <stop offset="0%" stopColor={t.c1} />
+            <stop offset="55%" stopColor={t.c2} />
+            <stop offset="100%" stopColor={t.c3} />
+          </radialGradient>
+        </defs>
+        {bumps.map(([x, y], i) => (
+          <circle key={i} cx={x} cy={y} r="7" fill={t.c2} />
+        ))}
+        <circle cx="50" cy="50" r="35" fill={t.rim} />
+        <circle cx="50" cy="50" r="32" fill={`url(#f${uid})`} />
+        <circle cx="50" cy="50" r="25.5" fill="none" stroke="rgba(255,255,255,0.42)" strokeWidth="1.6" />
+        <ellipse cx="50" cy="33" rx="21" ry="11" fill="rgba(255,255,255,0.30)" />
+      </svg>
+      <div
+        className="absolute inset-0 grid place-items-center"
+        style={{ filter: earned ? "drop-shadow(0 1px 1.5px rgba(60,40,10,0.30))" : "none" }}
+      >
+        <Icon size={size * 0.4} weight="fill" color={earned ? "#fff" : "#B4AFC0"} />
+      </div>
+      {!earned && (
+        <div className="absolute bottom-0 right-0 grid place-items-center rounded-full bg-ink ring-2 ring-white/80" style={{ height: size * 0.3, width: size * 0.3 }}>
+          <Lock size={size * 0.15} weight="fill" color="#fff" />
+        </div>
+      )}
+    </div>
+  );
 }
 
 /* Count-up number */

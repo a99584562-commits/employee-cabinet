@@ -45,14 +45,14 @@ export const kpis = [
 ];
 
 export const awards = [
-  { id: 1, emoji: "🏆", title: "Лучший месяц", sub: "×3", earned: true, rarity: "Легендарная" },
-  { id: 2, emoji: "🎓", title: "Ментор", sub: "обучила 2 новичков", earned: true, rarity: "Редкая" },
-  { id: 3, emoji: "⚡", title: "Скорость", sub: "ответ < 5 мин", earned: true, rarity: "Обычная" },
-  { id: 4, emoji: "🔥", title: "Марафонец", sub: "стрик 30 дней", earned: true, rarity: "Редкая" },
-  { id: 5, emoji: "🎯", title: "Снайпер", sub: "5 сделок подряд", earned: true, rarity: "Обычная" },
-  { id: 6, emoji: "💎", title: "Мастер продаж", sub: "78 из 100 сделок", earned: false, progress: 78 },
-  { id: 7, emoji: "👑", title: "Легенда квартала", sub: "стань №1 за квартал", earned: false, progress: 40 },
-  { id: 8, emoji: "🚀", title: "Рекорд чека", sub: "чек > 100 000 ₽", earned: false, progress: 62 },
+  { id: 1, icon: "trophy", tier: "legendary", title: "Лучший месяц", sub: "×3", earned: true, rarity: "Легендарная" },
+  { id: 2, icon: "cap", tier: "rare", title: "Ментор", sub: "обучила 2 новичков", earned: true, rarity: "Редкая" },
+  { id: 3, icon: "bolt", tier: "common", title: "Скорость", sub: "ответ < 5 мин", earned: true, rarity: "Обычная" },
+  { id: 4, icon: "fire", tier: "rare", title: "Марафонец", sub: "стрик 30 дней", earned: true, rarity: "Редкая" },
+  { id: 5, icon: "target", tier: "common", title: "Снайпер", sub: "5 сделок подряд", earned: true, rarity: "Обычная" },
+  { id: 6, icon: "diamond", tier: "rare", title: "Мастер продаж", sub: "78 из 100 сделок", earned: false, progress: 78 },
+  { id: 7, icon: "crown", tier: "legendary", title: "Легенда квартала", sub: "стань №1 за квартал", earned: false, progress: 40 },
+  { id: 8, icon: "rocket", tier: "rare", title: "Рекорд чека", sub: "чек > 100 000 ₽", earned: false, progress: 62 },
 ];
 
 export const courses = [

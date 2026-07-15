@@ -1,6 +1,6 @@
 import { ArrowUpRight, Fire, Star } from "@phosphor-icons/react";
 import { salary, kpis, tasks, courses, awards, team, user } from "../data";
-import { Panel, PanelHead, Tag, Hand, CountUp, Ring, Bar, Reveal, rub, cn, plural } from "../ui";
+import { Panel, PanelHead, Tag, Hand, Badge, CountUp, Ring, Bar, Reveal, rub, cn, plural } from "../ui";
 
 const SEG = ["var(--color-indigo)", "var(--color-mint)", "var(--color-amber)"];
 
@@ -214,18 +214,9 @@ function AwardsPreview() {
     <Panel className="flex h-full flex-col">
       <PanelHead no="07" title="Награды" right={`${earned}/${awards.length}`} />
       <div className="flex flex-1 flex-col px-5 pb-5">
-        <div className="grid grid-cols-4 gap-2.5">
+        <div className="grid grid-cols-4 place-items-center gap-x-2 gap-y-3.5">
           {awards.slice(0, 8).map((a) => (
-            <div
-              key={a.id}
-              title={a.title}
-              className={cn(
-                "grid aspect-square place-items-center rounded-2xl text-[22px] ring-1",
-                a.earned ? "bg-amber-soft ring-amber/25" : "bg-white/40 opacity-45 grayscale ring-black/[0.04]"
-              )}
-            >
-              {a.emoji}
-            </div>
+            <Badge key={a.id} icon={a.icon} tier={a.tier} earned={a.earned} size={58} />
           ))}
         </div>
         <div className="mt-auto flex items-center justify-between pt-4">

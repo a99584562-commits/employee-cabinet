@@ -1,6 +1,6 @@
-import { Fire, Lock } from "@phosphor-icons/react";
+import { Fire } from "@phosphor-icons/react";
 import { awards, user } from "../data";
-import { Panel, PanelHead, Tag, Hand, Bar, Reveal, cn, plural } from "../ui";
+import { Panel, PanelHead, Tag, Hand, Badge, Bar, Reveal, tierMeta, plural } from "../ui";
 
 export default function Awards() {
   const earned = awards.filter((a) => a.earned);
@@ -32,11 +32,18 @@ export default function Awards() {
           <PanelHead no="01" title="Полученные" right={`${earned.length} шт`} />
           <div className="grid grid-cols-2 gap-3 px-5 pb-5 sm:grid-cols-3 lg:grid-cols-5">
             {earned.map((a) => (
-              <div key={a.id} className="flex flex-col items-center gap-2 rounded-3xl bg-amber-soft p-5 text-center ring-1 ring-amber/20">
-                <span className="text-[40px]">{a.emoji}</span>
+              <div key={a.id} className="flex flex-col items-center gap-2.5 rounded-3xl bg-white/45 p-5 text-center ring-1 ring-black/[0.04]">
+                <Badge icon={a.icon} tier={a.tier} earned size={82} />
                 <div className="text-[13.5px] font-800 leading-tight">{a.title}</div>
                 <div className="text-[11.5px] font-500 text-ink-soft">{a.sub}</div>
-                {a.rarity && <span className="mt-0.5 rounded-full bg-white/60 px-2 py-0.5 ring-1 ring-black/[0.05]"><Tag className="text-amber">{a.rarity}</Tag></span>}
+                {a.rarity && (
+                  <span
+                    className="mt-0.5 rounded-full bg-white/70 px-2 py-0.5 text-[10.5px] font-700 uppercase tracking-[0.13em] ring-1 ring-black/[0.05]"
+                    style={{ color: tierMeta(a.tier).chip }}
+                  >
+                    {a.rarity}
+                  </span>
+                )}
               </div>
             ))}
           </div>
@@ -50,10 +57,7 @@ export default function Awards() {
           <div className="grid gap-3 px-5 pb-5 sm:grid-cols-2 lg:grid-cols-3">
             {locked.map((a) => (
               <div key={a.id} className="flex items-center gap-4 rounded-2xl bg-white/40 p-4 ring-1 ring-black/[0.04]">
-                <div className="relative grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-white/60 text-[26px] ring-1 ring-black/[0.04]">
-                  <span className="opacity-30 grayscale">{a.emoji}</span>
-                  <span className="absolute -bottom-1 -right-1 grid h-6 w-6 place-items-center rounded-full bg-ink text-white"><Lock size={11} weight="fill" /></span>
-                </div>
+                <Badge icon={a.icon} tier={a.tier} earned={false} size={58} />
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-[14px] font-800">{a.title}</div>
                   <div className="mb-2 truncate text-[11.5px] font-500 text-ink-mute">{a.sub}</div>
