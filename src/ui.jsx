@@ -21,60 +21,49 @@ export function Reveal({ children, delay = 0, className }) {
   );
 }
 
-/* Flat brutalist panel with hairline border */
+/* Frosted glass panel */
 const TONES = {
-  card: "bg-card text-ink border-ink",
-  paper: "bg-paper-2 text-ink border-ink",
-  yellow: "bg-yellow text-ink border-ink",
-  ink: "bg-ink text-paper border-ink",
-  pink: "bg-pink text-ink border-ink",
-  blue: "bg-blue text-paper border-ink",
+  card: "glass border-white/70 ring-1 ring-black/[0.04] text-ink",
+  strong: "glass-strong border-white/80 ring-1 ring-black/[0.04] text-ink",
+  accent: "glass-accent border-white/50 ring-1 ring-white/30 text-ink",
+  dark: "glass-dark border-white/10 text-white",
 };
 export function Panel({ children, className, tone = "card" }) {
-  return <div className={cn("border", TONES[tone], className)}>{children}</div>;
+  return (
+    <div className={cn("overflow-hidden rounded-[26px] border shadow-soft", TONES[tone], className)}>
+      {children}
+    </div>
+  );
 }
 
-/* Mono technical label */
+/* Soft uppercase label */
 export function Tag({ children, className }) {
   return (
-    <span className={cn("mono text-[10.5px] uppercase tracking-[0.18em]", className)}>{children}</span>
+    <span className={cn("text-[11px] font-700 uppercase tracking-[0.13em]", className)}>{children}</span>
   );
 }
 
-/* Panel header: index + title + optional right meta */
+/* Panel header: soft index chip + title + right meta */
 export function PanelHead({ no, title, right, onDark }) {
   return (
-    <div className={cn("flex items-center justify-between border-b px-5 py-3", onDark ? "border-paper/20" : "border-ink/12")}>
+    <div className="flex items-center justify-between px-5 pt-4 pb-3">
       <div className="flex items-center gap-2.5">
-        <span className={cn("mono text-[11px]", onDark ? "text-yellow" : "text-mute")}>{no}</span>
-        <Tag>{title}</Tag>
+        {no && (
+          <span className={cn("grid h-5 min-w-[20px] place-items-center rounded-full px-1.5 text-[10px] font-700",
+            onDark ? "bg-white/15 text-white/80" : "bg-ink/[0.06] text-ink-soft")}>
+            {no}
+          </span>
+        )}
+        <Tag className={onDark ? "text-white/60" : "text-ink-mute"}>{title}</Tag>
       </div>
-      {right && <Tag className={onDark ? "text-paper/50" : "text-mute"}>{right}</Tag>}
+      {right && <Tag className={onDark ? "text-white/45" : "text-ink-mute"}>{right}</Tag>}
     </div>
   );
 }
 
-/* Handwritten annotation */
+/* Handwritten accent */
 export function Hand({ children, className }) {
-  return <span className={cn("hand leading-none", className)}>{children}</span>;
-}
-
-/* Technical dot-matrix decoration (uses currentColor) */
-export function DotGrid({ className, style }) {
-  return <div className={cn("dotgrid", className)} style={style} aria-hidden />;
-}
-
-/* Scrolling marquee ticker */
-export function Ticker({ items, tone = "ink", fast, className }) {
-  const row = items.join("   ///   ");
-  return (
-    <div className={cn("overflow-hidden", tone === "ink" ? "bg-ink text-yellow" : "bg-yellow text-ink", className)}>
-      <div className={cn("marquee py-1.5", fast && "marquee-fast")}>
-        <span className="mono whitespace-pre pr-8 text-[11px] uppercase tracking-[0.22em]">{row}   ///   </span>
-        <span className="mono whitespace-pre pr-8 text-[11px] uppercase tracking-[0.22em]" aria-hidden>{row}   ///   </span>
-      </div>
-    </div>
-  );
+  return <span className={cn("font-hand leading-none", className)}>{children}</span>;
 }
 
 /* Count-up number */
@@ -99,7 +88,7 @@ export function CountUp({ to, format = (v) => Math.round(v), className }) {
 }
 
 /* Circular progress ring */
-export function Ring({ value, size = 64, stroke = 6, color = "var(--color-ink)", track = "rgba(16,16,16,0.12)", children }) {
+export function Ring({ value, size = 66, stroke = 7, color = "var(--color-indigo)", track = "rgba(35,32,48,0.08)", children }) {
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
   const off = c - (Math.min(value, 100) / 100) * c;
@@ -115,7 +104,7 @@ export function Ring({ value, size = 64, stroke = 6, color = "var(--color-ink)",
           fill="none"
           stroke={color}
           strokeWidth={stroke}
-          strokeLinecap="butt"
+          strokeLinecap="round"
           strokeDasharray={c}
           style={{ "--c": c, "--off": off, strokeDashoffset: off }}
         />
@@ -126,11 +115,11 @@ export function Ring({ value, size = 64, stroke = 6, color = "var(--color-ink)",
 }
 
 /* Linear progress bar */
-export function Bar({ value, color = "var(--color-ink)", track = "rgba(16,16,16,0.12)", className }) {
+export function Bar({ value, color = "var(--color-indigo)", track = "rgba(35,32,48,0.09)", className }) {
   const w = `${Math.min(value, 100)}%`;
   return (
-    <div className={cn("h-1.5 w-full overflow-hidden", className)} style={{ background: track }}>
-      <div className="bar-fill h-full" style={{ "--w": w, width: w, background: color }} />
+    <div className={cn("h-2 w-full overflow-hidden rounded-full", className)} style={{ background: track }}>
+      <div className="bar-fill h-full rounded-full" style={{ "--w": w, width: w, background: color }} />
     </div>
   );
 }
