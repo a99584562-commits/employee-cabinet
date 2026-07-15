@@ -43,6 +43,16 @@ export const myRequests = [
   { id: 3, type: "Аванс", detail: "20 000 ₽", status: "declined", date: "28.06" },
 ];
 
+// Очередь на согласование (вид руководителя) — workflow/RPA
+export const approvalQueue = [
+  { id: 1, name: "Ника Рой", initials: "НР", role: "Менеджер", type: "Отпуск", detail: "04–10 августа · 7 дней", submitted: "сегодня, 10:20", kind: "vacation" },
+  { id: 2, name: "Лев Гай", initials: "ЛГ", role: "Менеджер", type: "Аванс", detail: "25 000 ₽ до 20 числа", submitted: "вчера, 17:04", kind: "advance" },
+  { id: 3, name: "Пётр Юн", initials: "ПЮ", role: "Стажёр", type: "Отгул", detail: "18 июля · 4 часа", submitted: "вчера, 09:31", kind: "dayoff" },
+  { id: 4, name: "Аня Мороз", initials: "АМ", role: "Ст. менеджер", type: "Справка 2-НДФЛ", detail: "для визы", submitted: "2 дня назад", kind: "cert" },
+];
+
+export const approvalStages = ["Подано", "Руководитель", "Оформление", "Готово"];
+
 export const payslips = [
   { id: 1, month: "Июнь 2026", sum: 82100 },
   { id: 2, month: "Май 2026", sum: 79500 },

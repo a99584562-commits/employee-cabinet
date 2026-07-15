@@ -10,6 +10,7 @@ import Growth from "./views/Growth";
 import Awards from "./views/Awards";
 import Team from "./views/Team";
 import Requests from "./views/Requests";
+import Approvals from "./views/Approvals";
 import Profile from "./views/Profile";
 
 const NAV = [
@@ -117,7 +118,11 @@ export default function App() {
     r.style.setProperty("--color-accent-soft", a.soft);
   }, [theme, accent]);
 
-  const View = tab === "profile" ? Profile : tab === "home" && role === "manager" ? Manager : (NAV.find((n) => n.id === tab) ?? NAV[0]).View;
+  const View =
+    tab === "profile" ? Profile
+    : role === "manager" && tab === "home" ? Manager
+    : role === "manager" && tab === "requests" ? Approvals
+    : (NAV.find((n) => n.id === tab) ?? NAV[0]).View;
   const openProfile = () => { setTab("profile"); setSettingsOpen(false); };
 
   return (
