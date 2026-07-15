@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { House, Wallet, GraduationCap, Trophy, UsersThree, MagnifyingGlass, Bell, Gear, Sun, SunHorizon, Moon, MoonStars, Check, X } from "@phosphor-icons/react";
+import { House, Wallet, GraduationCap, Trophy, UsersThree, FileText, MagnifyingGlass, Bell, Gear, Sun, SunHorizon, Moon, MoonStars, Check, X, CaretRight } from "@phosphor-icons/react";
 import { user } from "./data";
 import { cn, Tag, Hand, Bar, IconTile } from "./ui";
 import Dashboard from "./views/Dashboard";
+import Manager from "./views/Manager";
 import Salary from "./views/Salary";
 import Growth from "./views/Growth";
 import Awards from "./views/Awards";
 import Team from "./views/Team";
+import Requests from "./views/Requests";
+import Profile from "./views/Profile";
 
 const NAV = [
   { id: "home", label: "Главная", Icon: House, View: Dashboard },
@@ -15,6 +18,7 @@ const NAV = [
   { id: "growth", label: "Развитие", Icon: GraduationCap, View: Growth },
   { id: "awards", label: "Награды", Icon: Trophy, View: Awards },
   { id: "team", label: "Команда", Icon: UsersThree, View: Team },
+  { id: "requests", label: "Заявки", Icon: FileText, View: Requests },
 ];
 
 const ACCENTS = {
@@ -57,7 +61,7 @@ function NavItem({ item, active, onClick, mobile }) {
       onClick={onClick}
       className={cn(
         "group relative flex items-center transition-colors duration-300",
-        mobile ? "flex-col gap-1 px-3 py-1" : "w-full gap-3 rounded-2xl px-3.5 py-2.5",
+        mobile ? "flex-1 flex-col gap-1 py-1" : "w-full gap-3 rounded-2xl px-3.5 py-2.5",
         active ? "text-ink" : "text-ink-mute hover:text-ink-soft"
       )}
     >
@@ -68,8 +72,8 @@ function NavItem({ item, active, onClick, mobile }) {
           transition={{ type: "spring", stiffness: 400, damping: 34 }}
         />
       )}
-      <Icon size={mobile ? 21 : 20} weight={active ? "fill" : "regular"} className={active ? "text-accent" : ""} />
-      <span className={cn("font-600", mobile ? "text-[10px]" : "text-[14.5px]")}>{label}</span>
+      <Icon size={mobile ? 20 : 20} weight={active ? "fill" : "regular"} className={active ? "text-accent" : ""} />
+      <span className={cn("font-600", mobile ? "text-[9.5px]" : "text-[14.5px]")}>{label}</span>
     </button>
   );
 }
@@ -82,15 +86,26 @@ function IconBtn({ children, onClick, className }) {
   );
 }
 
+function RoleToggle({ role, setRole }) {
+  return (
+    <div className="grid grid-cols-2 gap-1 rounded-2xl bg-ink/[0.05] p-1 dark:bg-white/[0.05]">
+      {[["employee", "Сотрудник"], ["manager", "Руководитель"]].map(([v, l]) => (
+        <button key={v} onClick={() => setRole(v)} className={cn("rounded-xl py-1.5 text-[11.5px] font-700 transition-colors", role === v ? "bg-white text-ink shadow-soft dark:bg-white/15 dark:text-white" : "text-ink-mute")}>
+          {l}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export default function App() {
   const [tab, setTab] = useState("home");
+  const [role, setRole] = useState("employee");
   const [notifOpen, setNotifOpen] = useState(false);
   const [seen, setSeen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [theme, setTheme] = useState("light");
   const [accent, setAccent] = useState("indigo");
-  const active = NAV.find((n) => n.id === tab) ?? NAV[0];
-  const View = active.View;
   const pct = Math.round((user.xp / user.xpToNext) * 100);
 
   useEffect(() => {
@@ -101,6 +116,9 @@ export default function App() {
     r.style.setProperty("--color-accent-2", a.c2);
     r.style.setProperty("--color-accent-soft", a.soft);
   }, [theme, accent]);
+
+  const View = tab === "profile" ? Profile : tab === "home" && role === "manager" ? Manager : (NAV.find((n) => n.id === tab) ?? NAV[0]).View;
+  const openProfile = () => { setTab("profile"); setSettingsOpen(false); };
 
   return (
     <div className="min-h-[100dvh]">
@@ -115,33 +133,36 @@ export default function App() {
             </div>
           </div>
 
+          <div className="mx-1 mt-3"><RoleToggle role={role} setRole={setRole} /></div>
+
           <nav className="mt-3 flex flex-col gap-1">
             {NAV.map((n) => (
               <NavItem key={n.id} item={n} active={tab === n.id} onClick={() => setTab(n.id)} />
             ))}
           </nav>
 
-          <div className="mx-1 mt-5 rounded-2xl bg-gradient-to-br from-accent to-accent-2 p-3.5 text-white shadow-soft">
-            <div className="flex items-center justify-between">
-              <Tag className="text-white/70">Уровень {user.level}</Tag>
-              <span className="text-[13px] font-800">{user.levelTitle}</span>
+          {role === "employee" && (
+            <div className="mx-1 mt-4 rounded-2xl bg-gradient-to-br from-accent to-accent-2 p-3.5 text-white shadow-soft">
+              <div className="flex items-center justify-between">
+                <Tag className="text-white/70">Уровень {user.level}</Tag>
+                <span className="text-[13px] font-800">{user.levelTitle}</span>
+              </div>
+              <Bar value={pct} color="#fff" track="rgba(255,255,255,0.25)" className="mt-2.5 h-1.5" />
+              <div className="mt-2 flex items-center justify-between">
+                <Tag className="text-white/70">{user.xp}/{user.xpToNext} XP</Tag>
+                <Hand className="text-[16px] text-white/90">почти ур.8!</Hand>
+              </div>
             </div>
-            <Bar value={pct} color="#fff" track="rgba(255,255,255,0.25)" className="mt-2.5 h-1.5" />
-            <div className="mt-2 flex items-center justify-between">
-              <Tag className="text-white/70">{user.xp}/{user.xpToNext} XP</Tag>
-              <Hand className="text-[16px] text-white/90">почти ур.8!</Hand>
-            </div>
-          </div>
+          )}
 
-          <div className="tile mt-auto flex items-center gap-3 rounded-2xl p-2.5">
-            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-accent to-accent-2 text-[13px] font-700 text-white">
-              {user.initials}
-            </div>
-            <div className="min-w-0 leading-tight">
+          <button onClick={openProfile} className={cn("tile group mt-auto flex items-center gap-3 rounded-2xl p-2.5 text-left transition-colors", tab === "profile" && "ring-2 ring-accent")}>
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-accent to-accent-2 text-[13px] font-700 text-white">{user.initials}</div>
+            <div className="min-w-0 flex-1 leading-tight">
               <div className="truncate text-[13px] font-700">{user.firstName} {user.lastName}</div>
-              <div className="truncate text-[11.5px] text-ink-mute">{user.role}</div>
+              <div className="truncate text-[11.5px] text-ink-mute">{role === "manager" ? "Руководитель отдела" : user.role}</div>
             </div>
-          </div>
+            <CaretRight size={14} weight="bold" className="shrink-0 text-ink-mute transition-transform group-hover:translate-x-0.5" />
+          </button>
         </div>
       </aside>
 
@@ -155,7 +176,7 @@ export default function App() {
             <h1 className="flex items-center text-[30px] font-800 leading-none tracking-tight sm:text-[38px]">
               {greet()}, {user.firstName}
               <GreetIcon />
-              <Hand className="ml-3 hidden text-[26px] text-accent sm:inline">рад видеть!</Hand>
+              <Hand className="ml-3 hidden text-[26px] text-accent sm:inline">{role === "manager" ? "как отдел?" : "рад видеть!"}</Hand>
             </h1>
           </div>
           <div className="flex shrink-0 items-center gap-2">
@@ -192,13 +213,13 @@ export default function App() {
           </div>
         </header>
 
-        <div key={tab} className="view-in">
+        <div key={tab + role} className="view-in">
           <View />
         </div>
       </main>
 
       {/* Mobile bottom nav */}
-      <nav className="glass-strong fixed bottom-4 left-1/2 z-40 flex -translate-x-1/2 items-center gap-1 rounded-[22px] border panel-edge p-1.5 shadow-lift md:hidden">
+      <nav className="glass-strong fixed inset-x-3 bottom-3 z-40 flex items-center gap-0.5 rounded-[22px] border panel-edge p-1.5 shadow-lift md:hidden">
         {NAV.map((n) => (
           <NavItem key={n.id} item={n} mobile active={tab === n.id} onClick={() => setTab(n.id)} />
         ))}
@@ -214,6 +235,20 @@ export default function App() {
               <button onClick={() => setSettingsOpen(false)} className="chip grid h-8 w-8 place-items-center rounded-full transition-opacity hover:opacity-70">
                 <X size={15} weight="bold" />
               </button>
+            </div>
+
+            <button onClick={openProfile} className="tile mt-5 flex w-full items-center gap-3 rounded-2xl p-2.5 text-left">
+              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-accent to-accent-2 text-[13px] font-700 text-white">{user.initials}</div>
+              <div className="min-w-0 flex-1">
+                <div className="truncate text-[13px] font-700">{user.firstName} {user.lastName}</div>
+                <div className="truncate text-[11.5px] text-ink-mute">Открыть профиль</div>
+              </div>
+              <CaretRight size={15} weight="bold" className="shrink-0 text-ink-mute" />
+            </button>
+
+            <div className="mt-6">
+              <Tag className="text-ink-mute">Режим просмотра</Tag>
+              <div className="mt-3"><RoleToggle role={role} setRole={setRole} /></div>
             </div>
 
             <div className="mt-6">
@@ -243,7 +278,7 @@ export default function App() {
             </div>
 
             <p className="mt-7 text-[11.5px] leading-relaxed text-ink-mute">
-              Тема и акцент применяются мгновенно. В реальном кабинете сохранятся для каждого сотрудника.
+              Тема, акцент и роль применяются мгновенно. В реальном кабинете сохранятся для каждого сотрудника.
             </p>
           </aside>
         </>

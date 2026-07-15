@@ -6,14 +6,48 @@ export const user = {
   role: "Менеджер по продажам",
   department: "Отдел продаж · Команда Север",
   initials: "КС",
-  emoji: "🌿",
   level: 7,
   levelTitle: "Профи",
   xp: 2140,
   xpToNext: 2600,
   streakDays: 34,
   tenure: "2 года 4 мес",
+  hireDate: "03.03.2024",
+  birthday: "14 марта",
+  phone: "+7 912 345-67-89",
+  email: "k.sokolova@company.ru",
+  manager: "Дмитрий Волков",
+  city: "Ижевск",
 };
+
+// Вид руководителя (РОП): команда с метриками. В проде — из Б24/amo/1С.
+export const teamMembers = [
+  { name: "Аня Мороз", initials: "АМ", role: "Ст. менеджер", planPct: 118, deals: 31, conv: 38, avgCheck: 62000, salary: 104000, status: "top" },
+  { name: "Олег Дым", initials: "ОД", role: "Менеджер", planPct: 104, deals: 27, conv: 33, avgCheck: 51000, salary: 92000, status: "top" },
+  { name: "Кира Соколова", initials: "КС", role: "Менеджер", planPct: 92, deals: 24, conv: 31, avgCheck: 48200, salary: 87400, status: "ok", me: true },
+  { name: "Лев Гай", initials: "ЛГ", role: "Менеджер", planPct: 86, deals: 21, conv: 28, avgCheck: 44000, salary: 79000, status: "ok" },
+  { name: "Ника Рой", initials: "НР", role: "Менеджер", planPct: 74, deals: 18, conv: 24, avgCheck: 41000, salary: 71000, status: "behind" },
+  { name: "Пётр Юн", initials: "ПЮ", role: "Стажёр", planPct: 58, deals: 11, conv: 19, avgCheck: 36000, salary: 52000, status: "behind" },
+];
+
+export const requestTypes = [
+  { id: "vacation", title: "Отпуск", desc: "оплачиваемый / за свой счёт", icon: "umbrella", tone: "mint" },
+  { id: "cert", title: "Справка 2-НДФЛ", desc: "или с места работы", icon: "file", tone: "indigo" },
+  { id: "advance", title: "Аванс", desc: "часть зарплаты раньше", icon: "coins", tone: "amber" },
+  { id: "dayoff", title: "Отгул", desc: "на несколько часов / день", icon: "clock", tone: "sky" },
+];
+
+export const myRequests = [
+  { id: 1, type: "Отпуск", detail: "12–26 августа · 14 дней", status: "approved", date: "03.07" },
+  { id: 2, type: "Справка 2-НДФЛ", detail: "для банка", status: "pending", date: "14.07" },
+  { id: 3, type: "Аванс", detail: "20 000 ₽", status: "declined", date: "28.06" },
+];
+
+export const payslips = [
+  { id: 1, month: "Июнь 2026", sum: 82100 },
+  { id: 2, month: "Май 2026", sum: 79500 },
+  { id: 3, month: "Апрель 2026", sum: 74800 },
+];
 
 export const salary = {
   month: "Июль",

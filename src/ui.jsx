@@ -1,13 +1,16 @@
 import { useEffect, useId, useState } from "react";
 import {
   Trophy, GraduationCap, Lightning, Fire, Target, Diamond, Crown, Rocket, Lock,
-  Package, PuzzlePiece, Handshake, Gear, BookOpen, Phone, Brain, ChatCircleDots, Coins, Medal, Star, HandWaving,
+  Package, PuzzlePiece, Handshake, Gear, BookOpen, Phone, Brain, ChatCircleDots, Coins, Medal, Star,
+  UmbrellaSimple, FileText, Clock, CalendarBlank, EnvelopeSimple, Buildings, MapPin, Cake, IdentificationBadge,
 } from "@phosphor-icons/react";
 
 const ICONS = {
   package: Package, puzzle: PuzzlePiece, handshake: Handshake, gear: Gear,
   book: BookOpen, phone: Phone, brain: Brain, chat: ChatCircleDots,
-  coins: Coins, medal: Medal, cap: GraduationCap, star: Star, wave: HandWaving,
+  coins: Coins, medal: Medal, cap: GraduationCap, star: Star,
+  umbrella: UmbrellaSimple, file: FileText, clock: Clock, calendar: CalendarBlank,
+  mail: EnvelopeSimple, building: Buildings, pin: MapPin, cake: Cake, id: IdentificationBadge,
 };
 
 /* Soft coloured icon tile (replaces emoji) */
