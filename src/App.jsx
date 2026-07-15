@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { House, Wallet, GraduationCap, Trophy, UsersThree, FileText, ChartBar, SealCheck, BookOpen, Coins, MagnifyingGlass, Bell, Gear, Sun, SunHorizon, Moon, MoonStars, Check, X, CaretRight } from "@phosphor-icons/react";
+import { House, Wallet, GraduationCap, Trophy, UsersThree, FileText, ChartBar, SealCheck, BookOpen, Coins, MagnifyingGlass, Bell, Gear, Sun, SunHorizon, Moon, MoonStars, Check, X, CaretRight, CaretDown, User, Briefcase, Calculator } from "@phosphor-icons/react";
 import { user, approvalQueue, approvalRoutes } from "./data";
 import { cn, Tag, Hand, Bar, IconTile } from "./ui";
 import Dashboard from "./views/Dashboard";
@@ -46,6 +46,7 @@ const NAV_BY_ROLE = {
 };
 
 const ROLES = [["employee", "Сотрудник"], ["manager", "Руководитель"], ["hr", "HR"], ["accountant", "Бухгалтер"]];
+const ROLE_META = { employee: { label: "Сотрудник", Icon: User }, manager: { label: "Руководитель", Icon: Briefcase }, hr: { label: "HR", Icon: UsersThree }, accountant: { label: "Бухгалтер", Icon: Calculator } };
 const ROLE_SUB = { employee: user.role, manager: "Руководитель отдела", hr: "HR-специалист", accountant: "Бухгалтер" };
 const ROLE_HELLO = { employee: "рад видеть!", manager: "как отдел?", hr: "как команда?", accountant: "считаем?" };
 
@@ -111,12 +112,14 @@ export default function App() {
   const [tab, setTab] = useState("home");
   const [requests, setRequests] = useState(() => approvalQueue.map((q) => ({ ...q, stage: q.stage ?? 1, status: "active", reason: null })));
   const [notifOpen, setNotifOpen] = useState(false);
+  const [roleMenu, setRoleMenu] = useState(false);
   const [seen, setSeen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [theme, setTheme] = useState("light");
   const [accent, setAccent] = useState("indigo");
   const pct = Math.round((user.xp / user.xpToNext) * 100);
   const nav = NAV_BY_ROLE[role];
+  const RoleCur = ROLE_META[role].Icon;
 
   useEffect(() => {
     const r = document.documentElement;
@@ -167,9 +170,7 @@ export default function App() {
             </div>
           </div>
 
-          <div className="mx-1 mt-3"><RoleToggle role={role} onChange={changeRole} /></div>
-
-          <nav className="mt-3 flex flex-col gap-1">
+          <nav className="mt-4 flex flex-col gap-1">
             {nav.map((n) => <NavItem key={n.id} item={n} active={tab === n.id} onClick={() => setTab(n.id)} />)}
           </nav>
 
@@ -210,6 +211,32 @@ export default function App() {
             </h1>
           </div>
           <div className="flex shrink-0 items-center gap-2">
+            <div className="relative">
+              <button onClick={() => setRoleMenu((o) => !o)} className="flex h-11 items-center gap-2 rounded-2xl glass border panel-edge px-3 shadow-soft transition-transform active:scale-95">
+                <RoleCur size={18} weight="bold" className="text-accent" />
+                <span className="hidden text-[13px] font-700 sm:inline">{ROLE_META[role].label}</span>
+                <CaretDown size={12} weight="bold" className="text-ink-mute" />
+              </button>
+              {roleMenu && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setRoleMenu(false)} />
+                  <div className="popover-in absolute right-0 top-[52px] z-50 w-[224px] rounded-3xl border panel-edge glass-strong p-1.5 shadow-lift">
+                    <div className="px-3 py-2"><Tag className="text-ink-mute">Роль в системе</Tag></div>
+                    {ROLES.map(([v, l]) => {
+                      const M = ROLE_META[v];
+                      const on = role === v;
+                      return (
+                        <button key={v} onClick={() => { changeRole(v); setRoleMenu(false); }} className={cn("flex w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-left transition-colors", on ? "bg-accent/[0.1]" : "hover:bg-white/60 dark:hover:bg-white/[0.06]")}>
+                          <M.Icon size={18} weight={on ? "fill" : "regular"} className={on ? "text-accent" : "text-ink-soft"} />
+                          <span className={cn("flex-1 text-[13.5px]", on ? "font-800 text-accent" : "font-600")}>{l}</span>
+                          {on && <Check size={14} weight="bold" className="text-accent" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
             <IconBtn><MagnifyingGlass size={18} weight="bold" className="text-ink-soft" /></IconBtn>
             <div className="relative">
               <IconBtn onClick={() => { setNotifOpen((o) => !o); setSeen(true); }}>
