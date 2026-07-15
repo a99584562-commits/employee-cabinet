@@ -158,6 +158,72 @@ export const team = {
 
 export const sources = ["Битрикс24", "amoCRM", "1С:ЗУП", "LMS Ориентир"];
 
+// ———— Enterprise ————
+
+// Аналитика (вид Директора)
+export const analytics = {
+  headcount: 124, hires: 9, turnover: 8.4, turnoverTrend: -1.2, enps: 42, staffing: 92, fot: 14.2,
+  turnoverSeries: [{ m: "Фев", v: 11.2 }, { m: "Мар", v: 10.4 }, { m: "Апр", v: 9.8 }, { m: "Май", v: 9.1 }, { m: "Июн", v: 8.9 }, { m: "Июл", v: 8.4 }],
+  fotByDept: [{ dept: "Продажи", v: 5.2 }, { dept: "Производство", v: 3.8 }, { dept: "Разработка", v: 2.9 }, { dept: "Маркетинг", v: 1.4 }, { dept: "Админ", v: 0.9 }],
+  tenure: [{ label: "< 1 года", v: 34 }, { label: "1–3 года", v: 52 }, { label: "3–5 лет", v: 24 }, { label: "> 5 лет", v: 14 }],
+  risk: [
+    { name: "Пётр Юн", initials: "ПЮ", dept: "Продажи", level: "high", reason: "Низкий eNPS + план 58%" },
+    { name: "Ника Рой", initials: "НР", dept: "Продажи", level: "medium", reason: "План 74%, редкие 1:1" },
+    { name: "Игорь Ли", initials: "ИЛ", dept: "Разработка", level: "medium", reason: "Нет роста ЗП 14 мес" },
+  ],
+};
+
+// Интеграции
+export const integrations = [
+  { id: "b24", name: "Битрикс24", desc: "CRM · сделки, KPI", icon: "building", tone: "sky", connected: true, sync: "5 мин назад" },
+  { id: "1c", name: "1С:ЗУП", desc: "Зарплата и кадры", icon: "coins", tone: "amber", connected: true, sync: "1 час назад" },
+  { id: "amo", name: "amoCRM", desc: "Воронки продаж", icon: "chat", tone: "mint", connected: true, sync: "12 мин назад" },
+  { id: "sap", name: "SAP SF", desc: "HR-ядро", icon: "brain", tone: "indigo", connected: false, sync: "" },
+  { id: "boss", name: "БОСС-Кадровик", desc: "Кадровый учёт", icon: "id", tone: "pink", connected: false, sync: "" },
+  { id: "sbis", name: "СБИС", desc: "ЭДО и отчётность", icon: "file", tone: "teal", connected: false, sync: "" },
+  { id: "tg", name: "Telegram", desc: "Уведомления", icon: "phone", tone: "sky", connected: true, sync: "онлайн" },
+  { id: "mail", name: "Почта (SMTP)", desc: "Email-рассылки", icon: "mail", tone: "indigo", connected: true, sync: "онлайн" },
+];
+
+// Аудит-лог
+export const auditLog = [
+  { id: 1, who: "Кира Соколова", role: "Админ", action: "изменила цель KPI «План продаж» → 100%", time: "сегодня, 14:32", tone: "indigo" },
+  { id: 2, who: "Дмитрий Волков", role: "Руководитель", action: "согласовал отпуск · Ника Рой", time: "сегодня, 11:10", tone: "mint" },
+  { id: 3, who: "HR-бот", role: "Система", action: "назначил курс «Продукт 2.0» · 6 чел", time: "вчера, 18:04", tone: "amber" },
+  { id: 4, who: "Бухгалтерия", role: "Бухгалтер", action: "выплатила ЗП за июль · 6 чел", time: "вчера, 16:20", tone: "teal" },
+  { id: 5, who: "Олег Дым", role: "Сотрудник", action: "подал заявку на аванс 25 000 ₽", time: "14.07, 17:04", tone: "sky" },
+  { id: 6, who: "Админ", role: "Админ", action: "подключил интеграцию Битрикс24", time: "12.07, 09:15", tone: "pink" },
+];
+
+// Права доступа (0 нет · 1 просмотр · 2 редакт)
+export const permissionSections = ["Зарплата", "KPI", "Согласования", "База знаний", "Аналитика"];
+export const permissionRoles = [
+  { role: "Сотрудник", perms: [1, 1, 0, 1, 0] },
+  { role: "Руководитель", perms: [1, 1, 2, 1, 1] },
+  { role: "HR", perms: [0, 2, 2, 2, 1] },
+  { role: "Бухгалтер", perms: [2, 0, 2, 0, 0] },
+  { role: "Директор", perms: [1, 1, 1, 1, 2] },
+  { role: "Админ", perms: [2, 2, 2, 2, 2] },
+];
+
+// Настройки безопасности
+export const securityToggles = [
+  { id: "sso", title: "SSO (SAML / Active Directory)", desc: "Единый вход через корпоративный логин", on: true },
+  { id: "2fa", title: "Двухфакторная аутентификация", desc: "Обязательна для ролей с доступом к ЗП", on: true },
+  { id: "ip", title: "Ограничение по IP / VPN", desc: "Вход только из корпоративной сети", on: false },
+  { id: "residency", title: "Хранение данных в РФ", desc: "Соответствие 152-ФЗ", on: true },
+  { id: "audit", title: "Полный аудит действий", desc: "Логирование всех изменений и согласований", on: true },
+];
+
+// Процессы согласования (редактор маршрутов)
+export const stageRoles = [["manager", "Руководитель"], ["hr", "HR"], ["accountant", "Бухгалтерия"], ["director", "Директор"], ["security", "Служба безопасности"]];
+export const processDefs = [
+  { id: "vacation", name: "Отпуск", icon: "umbrella", tone: "mint", stages: [{ role: "manager", sla: "1 день" }, { role: "hr", sla: "2 дня" }], cond: null },
+  { id: "advance", name: "Аванс", icon: "coins", tone: "amber", stages: [{ role: "manager", sla: "1 день" }, { role: "accountant", sla: "2 дня" }], cond: { value: 50000, role: "director" } },
+  { id: "dayoff", name: "Отгул", icon: "clock", tone: "sky", stages: [{ role: "manager", sla: "4 часа" }], cond: null },
+  { id: "cert", name: "Справка 2-НДФЛ", icon: "file", tone: "indigo", stages: [{ role: "hr", sla: "1 день" }], cond: null },
+];
+
 // Уровни / пороги XP (конструктор)
 export const levels = [
   { n: 1, title: "Новичок", xp: 0 },

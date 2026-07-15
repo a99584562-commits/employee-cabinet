@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { House, Wallet, GraduationCap, Trophy, UsersThree, FileText, ChartBar, SealCheck, BookOpen, Coins, MagnifyingGlass, Bell, Gear, Sun, SunHorizon, Moon, MoonStars, Check, X, CaretRight, CaretDown, User, Briefcase, Calculator, SlidersHorizontal } from "@phosphor-icons/react";
+import { House, Wallet, GraduationCap, Trophy, UsersThree, FileText, ChartBar, SealCheck, BookOpen, Coins, MagnifyingGlass, Bell, Gear, Sun, SunHorizon, Moon, MoonStars, Check, X, CaretRight, CaretDown, User, Briefcase, Calculator, SlidersHorizontal, ChartLineUp, Plugs, ShieldCheck } from "@phosphor-icons/react";
 import { user, approvalQueue, approvalRoutes } from "./data";
 import { cn, Tag, Hand, Bar, IconTile } from "./ui";
 import Dashboard from "./views/Dashboard";
@@ -16,6 +16,9 @@ import KnowledgeAdmin from "./views/KnowledgeAdmin";
 import AssignTraining from "./views/AssignTraining";
 import Roster from "./views/Roster";
 import Builder from "./views/Builder";
+import Analytics from "./views/Analytics";
+import Integrations from "./views/Integrations";
+import Security from "./views/Security";
 import Profile from "./views/Profile";
 
 const NAV_BY_ROLE = {
@@ -44,16 +47,23 @@ const NAV_BY_ROLE = {
     { id: "payroll", label: "Ведомость", Icon: Coins },
     { id: "roster", label: "Команда", Icon: UsersThree },
   ],
+  director: [
+    { id: "analytics", label: "Аналитика", Icon: ChartLineUp },
+    { id: "requests", label: "Согласования", Icon: SealCheck },
+    { id: "roster", label: "Команда", Icon: UsersThree },
+  ],
   admin: [
     { id: "builder", label: "Конструктор", Icon: SlidersHorizontal },
+    { id: "integrations", label: "Интеграции", Icon: Plugs },
+    { id: "security", label: "Безопасность", Icon: ShieldCheck },
     { id: "roster", label: "Команда", Icon: UsersThree },
   ],
 };
 
-const ROLES = [["employee", "Сотрудник"], ["manager", "Руководитель"], ["hr", "HR"], ["accountant", "Бухгалтер"], ["admin", "Админ"]];
-const ROLE_META = { employee: { label: "Сотрудник", Icon: User }, manager: { label: "Руководитель", Icon: Briefcase }, hr: { label: "HR", Icon: UsersThree }, accountant: { label: "Бухгалтер", Icon: Calculator }, admin: { label: "Админ", Icon: SlidersHorizontal } };
-const ROLE_SUB = { employee: user.role, manager: "Руководитель отдела", hr: "HR-специалист", accountant: "Бухгалтер", admin: "Администратор" };
-const ROLE_HELLO = { employee: "рад видеть!", manager: "как отдел?", hr: "как команда?", accountant: "считаем?", admin: "настроим?" };
+const ROLES = [["employee", "Сотрудник"], ["manager", "Руководитель"], ["hr", "HR"], ["accountant", "Бухгалтер"], ["director", "Директор"], ["admin", "Админ"]];
+const ROLE_META = { employee: { label: "Сотрудник", Icon: User }, manager: { label: "Руководитель", Icon: Briefcase }, hr: { label: "HR", Icon: UsersThree }, accountant: { label: "Бухгалтер", Icon: Calculator }, director: { label: "Директор", Icon: ChartLineUp }, admin: { label: "Админ", Icon: SlidersHorizontal } };
+const ROLE_SUB = { employee: user.role, manager: "Руководитель отдела", hr: "HR-специалист", accountant: "Бухгалтер", director: "Директор", admin: "Администратор" };
+const ROLE_HELLO = { employee: "рад видеть!", manager: "как отдел?", hr: "как команда?", accountant: "считаем?", director: "как компания?", admin: "настроим?" };
 
 const ACCENTS = {
   indigo: { name: "Индиго", c1: "#6a5af0", c2: "#9366f2", soft: "#ece9fe" },
@@ -157,6 +167,9 @@ export default function App() {
       case "knowledge": return <KnowledgeAdmin />;
       case "assign": return <AssignTraining />;
       case "payroll": return <Payroll />;
+      case "analytics": return <Analytics />;
+      case "integrations": return <Integrations />;
+      case "security": return <Security />;
       case "builder": return <Builder />;
       case "requests": return role === "employee" ? <Requests /> : <Approvals role={role} requests={requests} onApprove={approve} onDecline={decline} />;
       default: return <Dashboard />;

@@ -9,7 +9,7 @@ const KIND = {
   dayoff: { icon: "clock", tone: "sky" },
   cert: { icon: "file", tone: "indigo" },
 };
-const ROLE_LABEL = { manager: "Руководитель", hr: "HR", accountant: "Бухгалтерия" };
+const ROLE_LABEL = { manager: "Руководитель", hr: "HR", accountant: "Бухгалтерия", director: "Директор" };
 const FILTERS = [
   { k: "all", l: "Все" },
   { k: "vacation", l: "Отпуска" },
