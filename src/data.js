@@ -51,9 +51,29 @@ export const approvalQueue = [
   { id: 4, name: "Аня Мороз", initials: "АМ", role: "Ст. менеджер", type: "Справка 2-НДФЛ", detail: "для визы", submitted: "2 дня назад", kind: "cert" },
   { id: 5, name: "Олег Дым", initials: "ОД", role: "Менеджер", type: "Отпуск", detail: "22–24 августа · 3 дня", submitted: "сегодня, 08:12", kind: "vacation" },
   { id: 6, name: "Лев Гай", initials: "ЛГ", role: "Менеджер", type: "Отгул", detail: "21 июля · 2 часа", submitted: "сегодня, 11:40", kind: "dayoff" },
+  // уже согласованы руководителем — ждут HR / Бухгалтерию
+  { id: 7, name: "Влад Сан", initials: "ВС", role: "Менеджер", type: "Отпуск", detail: "01–05 сентября · 5 дней", submitted: "вчера, 12:10", kind: "vacation", stage: 2 },
+  { id: 8, name: "Юля Ро", initials: "ЮР", role: "Ст. менеджер", type: "Аванс", detail: "30 000 ₽ к выплате", submitted: "вчера, 15:35", kind: "advance", stage: 2 },
 ];
 
 export const declineReasons = ["Недостаточно данных", "Нет замены на период", "Перенести срок", "Превышен лимит"];
+
+// Маршруты согласования: [ярлык этапа, роль, кто действует]
+export const approvalRoutes = {
+  vacation: [["Подано", "employee"], ["Руководитель", "manager"], ["HR", "hr"], ["Готово", "done"]],
+  advance: [["Подано", "employee"], ["Руководитель", "manager"], ["Бухгалтерия", "accountant"], ["Выплата", "done"]],
+  dayoff: [["Подано", "employee"], ["Руководитель", "manager"], ["Готово", "done"]],
+  cert: [["Подано", "employee"], ["HR", "hr"], ["Готово", "done"]],
+};
+
+// База знаний (управление — вид HR)
+export const kbArticles = [
+  { id: 1, title: "Регламент продаж", tag: "Процессы", icon: "book", tone: "indigo", status: "published", views: 214 },
+  { id: 2, title: "Скрипты звонков", tag: "Скрипты", icon: "phone", tone: "mint", status: "published", views: 189 },
+  { id: 3, title: "База по продукту", tag: "Продукт", icon: "brain", tone: "pink", status: "published", views: 342 },
+  { id: 4, title: "FAQ для клиентов", tag: "Поддержка", icon: "chat", tone: "sky", status: "draft", views: 0 },
+  { id: 5, title: "Онбординг новичка", tag: "Онбординг", icon: "cap", tone: "amber", status: "draft", views: 0 },
+];
 
 export const payslips = [
   { id: 1, month: "Июнь 2026", sum: 82100 },
