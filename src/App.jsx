@@ -216,6 +216,19 @@ export default function App() {
         <div key={tab + role} className="view-in">
           <View />
         </div>
+
+        <footer className="mt-8 flex justify-center pb-1">
+          <a
+            href="https://limecrm.ru"
+            target="_blank"
+            rel="noreferrer"
+            className="group inline-flex items-center gap-2.5 rounded-full glass border panel-edge px-4 py-2 shadow-soft transition-transform hover:-translate-y-0.5 active:scale-[0.98]"
+          >
+            <span className="grid h-6 w-6 place-items-center rounded-lg bg-lime text-[13px] font-900 text-ink shadow-[0_0_14px_rgba(163,230,53,0.55)]">✦</span>
+            <span className="text-[12.5px] font-600 text-ink-soft">Разработано в <b className="font-800 text-ink">Агентстве ЛАЙМ</b></span>
+            <span className="hidden text-[11.5px] font-500 text-ink-mute sm:inline">· limecrm.ru</span>
+          </a>
+        </footer>
       </main>
 
       {/* Mobile bottom nav */}
