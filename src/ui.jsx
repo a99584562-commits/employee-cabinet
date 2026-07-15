@@ -114,6 +114,15 @@ export function Hand({ children, className }) {
   return <span className={cn("font-hand leading-none", className)}>{children}</span>;
 }
 
+/* Toggle switch */
+export function Switch({ on, onChange }) {
+  return (
+    <button onClick={onChange} className={cn("relative h-6 w-10 shrink-0 rounded-full transition-colors", on ? "bg-accent" : "bg-ink/[0.15] dark:bg-white/20")}>
+      <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-soft transition-transform duration-200", on ? "translate-x-[18px]" : "translate-x-0.5")} />
+    </button>
+  );
+}
+
 /* ————— Achievement medal (custom SVG, not emoji) ————— */
 const BADGE_ICONS = { trophy: Trophy, cap: GraduationCap, bolt: Lightning, fire: Fire, target: Target, diamond: Diamond, crown: Crown, rocket: Rocket };
 const TIERS = {

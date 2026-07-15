@@ -157,3 +157,15 @@ export const team = {
 };
 
 export const sources = ["Битрикс24", "amoCRM", "1С:ЗУП", "LMS Ориентир"];
+
+// Уровни / пороги XP (конструктор)
+export const levels = [
+  { n: 1, title: "Новичок", xp: 0 },
+  { n: 2, title: "Стажёр", xp: 300 },
+  { n: 3, title: "Джуниор", xp: 650 },
+  { n: 4, title: "Специалист", xp: 1050 },
+  { n: 5, title: "Уверенный", xp: 1500 },
+  { n: 6, title: "Сильный", xp: 1950 },
+  { n: 7, title: "Профи", xp: 2140 },
+  { n: 8, title: "Эксперт", xp: 2600 },
+];

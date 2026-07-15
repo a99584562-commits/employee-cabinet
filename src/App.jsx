@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { House, Wallet, GraduationCap, Trophy, UsersThree, FileText, ChartBar, SealCheck, BookOpen, Coins, MagnifyingGlass, Bell, Gear, Sun, SunHorizon, Moon, MoonStars, Check, X, CaretRight, CaretDown, User, Briefcase, Calculator } from "@phosphor-icons/react";
+import { House, Wallet, GraduationCap, Trophy, UsersThree, FileText, ChartBar, SealCheck, BookOpen, Coins, MagnifyingGlass, Bell, Gear, Sun, SunHorizon, Moon, MoonStars, Check, X, CaretRight, CaretDown, User, Briefcase, Calculator, SlidersHorizontal } from "@phosphor-icons/react";
 import { user, approvalQueue, approvalRoutes } from "./data";
 import { cn, Tag, Hand, Bar, IconTile } from "./ui";
 import Dashboard from "./views/Dashboard";
@@ -15,6 +15,7 @@ import Payroll from "./views/Payroll";
 import KnowledgeAdmin from "./views/KnowledgeAdmin";
 import AssignTraining from "./views/AssignTraining";
 import Roster from "./views/Roster";
+import Builder from "./views/Builder";
 import Profile from "./views/Profile";
 
 const NAV_BY_ROLE = {
@@ -43,12 +44,16 @@ const NAV_BY_ROLE = {
     { id: "payroll", label: "Ведомость", Icon: Coins },
     { id: "roster", label: "Команда", Icon: UsersThree },
   ],
+  admin: [
+    { id: "builder", label: "Конструктор", Icon: SlidersHorizontal },
+    { id: "roster", label: "Команда", Icon: UsersThree },
+  ],
 };
 
-const ROLES = [["employee", "Сотрудник"], ["manager", "Руководитель"], ["hr", "HR"], ["accountant", "Бухгалтер"]];
-const ROLE_META = { employee: { label: "Сотрудник", Icon: User }, manager: { label: "Руководитель", Icon: Briefcase }, hr: { label: "HR", Icon: UsersThree }, accountant: { label: "Бухгалтер", Icon: Calculator } };
-const ROLE_SUB = { employee: user.role, manager: "Руководитель отдела", hr: "HR-специалист", accountant: "Бухгалтер" };
-const ROLE_HELLO = { employee: "рад видеть!", manager: "как отдел?", hr: "как команда?", accountant: "считаем?" };
+const ROLES = [["employee", "Сотрудник"], ["manager", "Руководитель"], ["hr", "HR"], ["accountant", "Бухгалтер"], ["admin", "Админ"]];
+const ROLE_META = { employee: { label: "Сотрудник", Icon: User }, manager: { label: "Руководитель", Icon: Briefcase }, hr: { label: "HR", Icon: UsersThree }, accountant: { label: "Бухгалтер", Icon: Calculator }, admin: { label: "Админ", Icon: SlidersHorizontal } };
+const ROLE_SUB = { employee: user.role, manager: "Руководитель отдела", hr: "HR-специалист", accountant: "Бухгалтер", admin: "Администратор" };
+const ROLE_HELLO = { employee: "рад видеть!", manager: "как отдел?", hr: "как команда?", accountant: "считаем?", admin: "настроим?" };
 
 const ACCENTS = {
   indigo: { name: "Индиго", c1: "#6a5af0", c2: "#9366f2", soft: "#ece9fe" },
@@ -115,8 +120,8 @@ export default function App() {
   const [roleMenu, setRoleMenu] = useState(false);
   const [seen, setSeen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [theme, setTheme] = useState("light");
-  const [accent, setAccent] = useState("indigo");
+  const [theme, setTheme] = useState(() => { try { return localStorage.getItem("ec-theme") || "light"; } catch { return "light"; } });
+  const [accent, setAccent] = useState(() => { try { const a = localStorage.getItem("ec-accent"); return a && ACCENTS[a] ? a : "indigo"; } catch { return "indigo"; } });
   const pct = Math.round((user.xp / user.xpToNext) * 100);
   const nav = NAV_BY_ROLE[role];
   const RoleCur = ROLE_META[role].Icon;
@@ -124,10 +129,11 @@ export default function App() {
   useEffect(() => {
     const r = document.documentElement;
     r.dataset.theme = theme;
-    const a = ACCENTS[accent];
+    const a = ACCENTS[accent] || ACCENTS.indigo;
     r.style.setProperty("--color-accent", a.c1);
     r.style.setProperty("--color-accent-2", a.c2);
     r.style.setProperty("--color-accent-soft", a.soft);
+    try { localStorage.setItem("ec-theme", theme); localStorage.setItem("ec-accent", accent); } catch { /* ignore */ }
   }, [theme, accent]);
 
   const changeRole = (r) => { setRole(r); setTab(NAV_BY_ROLE[r][0].id); setNotifOpen(false); };
@@ -151,6 +157,7 @@ export default function App() {
       case "knowledge": return <KnowledgeAdmin />;
       case "assign": return <AssignTraining />;
       case "payroll": return <Payroll />;
+      case "builder": return <Builder />;
       case "requests": return role === "employee" ? <Requests /> : <Approvals role={role} requests={requests} onApprove={approve} onDecline={decline} />;
       default: return <Dashboard />;
     }
