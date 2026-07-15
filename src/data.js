@@ -49,9 +49,11 @@ export const approvalQueue = [
   { id: 2, name: "Лев Гай", initials: "ЛГ", role: "Менеджер", type: "Аванс", detail: "25 000 ₽ до 20 числа", submitted: "вчера, 17:04", kind: "advance" },
   { id: 3, name: "Пётр Юн", initials: "ПЮ", role: "Стажёр", type: "Отгул", detail: "18 июля · 4 часа", submitted: "вчера, 09:31", kind: "dayoff" },
   { id: 4, name: "Аня Мороз", initials: "АМ", role: "Ст. менеджер", type: "Справка 2-НДФЛ", detail: "для визы", submitted: "2 дня назад", kind: "cert" },
+  { id: 5, name: "Олег Дым", initials: "ОД", role: "Менеджер", type: "Отпуск", detail: "22–24 августа · 3 дня", submitted: "сегодня, 08:12", kind: "vacation" },
+  { id: 6, name: "Лев Гай", initials: "ЛГ", role: "Менеджер", type: "Отгул", detail: "21 июля · 2 часа", submitted: "сегодня, 11:40", kind: "dayoff" },
 ];
 
-export const approvalStages = ["Подано", "Руководитель", "Оформление", "Готово"];
+export const declineReasons = ["Недостаточно данных", "Нет замены на период", "Перенести срок", "Превышен лимит"];
 
 export const payslips = [
   { id: 1, month: "Июнь 2026", sum: 82100 },
